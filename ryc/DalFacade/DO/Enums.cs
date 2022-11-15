@@ -9,12 +9,12 @@ using System.Xml.Linq;
 namespace DO;
 
 /// <summary>
-/// 
+/// some enums
 /// </summary>
 public struct Enums
 {
     /// <summary>
-    /// 
+    /// an enum of burgeranch categories
     /// </summary>
     public enum Category {BURGERS, EXTRAS, DESSERTS, JUICES , FOODֹ_COMBOS};
 }
