@@ -62,8 +62,12 @@ internal static class DataSource
     /// </summary>
     private static void createOrderItems()
     {
+        int n;
         for (int i = 0; i < 40; i++)
-            orderItemsArray[i] = new OrderItem { ID = Config.OrderItemID, OrderID = ordersArray[i % 20].ID, ProductID = productsArray[i % 10].ID, Amount = s_rand.Next(1, 10), Price = productsArray[i % 10].Price };
+        {
+            n = s_rand.Next(1, 10);
+            orderItemsArray[i] = new OrderItem { ID = Config.OrderItemID, OrderID = ordersArray[i % 20].ID, ProductID = productsArray[i % n].ID, Amount = s_rand.Next(1, 10), Price = productsArray[i % n].Price };
+        }
     }
     /// <summary>
     /// config class
