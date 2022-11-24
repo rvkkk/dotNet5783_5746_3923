@@ -1,4 +1,5 @@
 ﻿using DO;
+using DalApi;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Dal;
 
-public class DalOrderItem
+internal class DalOrderItem : IOrderItem
 {
     /// <summary>
     /// adds a new orderItem
@@ -18,8 +19,7 @@ public class DalOrderItem
     public int Add(OrderItem o)
     {
         o.ID = DataSource.Config.OrderItemID;
-        DataSource.orderItemsArray[DataSource.Config.lastOrderItem] = o;
-        DataSource.Config.lastOrderItem++;
+        DataSource.lOrderItem.Add(o);
         return o.ID;
     }
     /// <summary>
@@ -30,15 +30,12 @@ public class DalOrderItem
     public void Delete(int ID)
     {
         bool flag = false;
-        for (int i = 0; i < DataSource.Config.lastOrderItem; i++)
+        for (int i = 0; i < DataSource.lOrderItem.Count; i++)
         {
-            if (DataSource.orderItemsArray[i].ID == ID)
-            {
-                DataSource.Config.lastOrderItem--;
+            if (DataSource.lOrderItem[i].ID == ID)
                 flag = true;
-            }
             if (flag)
-                DataSource.orderItemsArray[i] = DataSource.orderItemsArray[i + 1];
+                DataSource.lOrderItem[i] = DataSource.lOrderItem[i + 1];
         }
         if (!flag)
             throw new Exception("there in no such an id");
@@ -49,10 +46,10 @@ public class DalOrderItem
     /// <param name="o">recived orderItem</param>
     public void Update(OrderItem o)
     {
-        for (int i = 0; i < DataSource.Config.lastOrderItem; i++)
+        for (int i = 0; i < DataSource.lOrderItem.Count; i++)
         {
-            if (DataSource.orderItemsArray[i].ID == o.ID)
-                DataSource.orderItemsArray[i] = o;
+            if (DataSource.lOrderItem[i].ID == o.ID)
+                DataSource.lOrderItem[i] = o;
         }
     }
     /// <summary>
@@ -63,10 +60,10 @@ public class DalOrderItem
     /// <exception cref="Exception">there in no such an orderItem id</exception>
     public OrderItem Get(int ID)
     {
-        for (int i = 0; i < DataSource.Config.lastOrderItem; i++)
+        for (int i = 0; i < DataSource.lOrderItem.Count; i++)
         {
-            if (DataSource.orderItemsArray[i].ID == ID)
-                return DataSource.orderItemsArray[i];
+            if (DataSource.lOrderItem[i].ID == ID)
+                return DataSource.lOrderItem[i];
         }
         throw new Exception("there in no such an id");
     }
@@ -74,14 +71,14 @@ public class DalOrderItem
     /// returns all orderItems
     /// </summary>
     /// <returns>orderItems</returns>
-    public OrderItem[] GetAll()
-    {
-        OrderItem[] orderItems = new OrderItem[DataSource.Config.lastOrderItem];
-        for (int i = 0; i < orderItems.Length; i++)
+    public IEnumerable<OrderItem> GetAll()
+    { 
+        List<OrderItem> lorderItems = new List<OrderItem>();
+        for (int i = 0; i < DataSource.lOrderItem.Count; i++)
         {
-            orderItems[i] = DataSource.orderItemsArray[i];
+            lorderItems.Add(DataSource.lOrderItem[i]);
         }
-        return orderItems;
+        return lorderItems;
     }
     /// <summary>
     /// returns orderItem by orderId and productId
@@ -92,10 +89,10 @@ public class DalOrderItem
     /// <exception cref="Exception">there in no such an order item</exception>
     public OrderItem GetOrderItem(int IDO, int IDP)
     {
-        for (int i = 0; i < DataSource.Config.lastOrderItem; i++)
+        for (int i = 0; i < DataSource.lOrderItem.Count; i++)
         {
-            if (DataSource.orderItemsArray[i].OrderID == IDO && DataSource.orderItemsArray[i].ProductID == IDP)
-                return DataSource.orderItemsArray[i];
+            if (DataSource.lOrderItem[i].OrderID == IDO && DataSource.lOrderItem[i].ProductID == IDP)
+                return DataSource.lOrderItem[i];
         }
         throw new Exception("there in no such an order item");
     }
@@ -104,20 +101,14 @@ public class DalOrderItem
     /// </summary>
     /// <param name="IDO">recived order id</param>
     /// <returns>an array of orderItems</returns>
-    public OrderItem[] GetOrderItemsOfOrder(int IDO)
+    public IEnumerable<OrderItem> GetOrderItemsOfOrder(int IDO)
     {
-        OrderItem[] orderItems = new OrderItem[DataSource.Config.lastOrderItem];
-        int c = 0;
-        for (int i = 0; i < DataSource.Config.lastOrderItem; i++)
+        List<OrderItem> lorderItems = new List<OrderItem>();
+        for (int i = 0; i < DataSource.lOrderItem.Count; i++)
         {
-            if (DataSource.orderItemsArray[i].OrderID == IDO)
-                orderItems[c++] = DataSource.orderItemsArray[i];
+            if (DataSource.lOrderItem[i].OrderID == IDO)
+                lorderItems.Add(DataSource.lOrderItem[i]);
         }
-        OrderItem[] items = new OrderItem[c];
-        for (int i = 0; i < items.Length; i++)
-        {
-            items[i] = orderItems[i];
-        }
-        return items;
+        return lorderItems;
     }
 }

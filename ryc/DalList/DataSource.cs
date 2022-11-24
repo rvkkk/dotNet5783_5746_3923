@@ -1,6 +1,8 @@
-﻿using DO;
+﻿using DalApi;
+using DO;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection.Emit;
 using System.Text;
@@ -11,9 +13,9 @@ namespace Dal;
 internal static class DataSource
 {
     public static readonly Random s_rand = new Random();
-    internal static Product[] productsArray = new Product[50];
-    internal static Order[] ordersArray = new Order[100];
-    internal static OrderItem[] orderItemsArray = new OrderItem[200];
+    internal static List<Product> lProduct = new List<Product>();
+    internal static List<Order> lOrder = new List<Order>();  
+    internal static List<OrderItem> lOrderItem = new List<OrderItem>();
     /// <summary>
     /// static constructor
     /// </summary>
@@ -38,7 +40,7 @@ internal static class DataSource
         string[] productNames = { "burger 180g", "burger 250g", "angos burger", "coke", "franch fries", "orange juice", "onion rings", "schnitzel burger", "chocopay", "ice cream" };
         Enums.Category[] productCategories = { Enums.Category.BURGERS, Enums.Category.BURGERS, Enums.Category.BURGERS, Enums.Category.JUICES, Enums.Category.EXTRAS, Enums.Category.JUICES, Enums.Category.EXTRAS, Enums.Category.BURGERS, Enums.Category.DESSERTS, Enums.Category.DESSERTS };
         for (int i = 0; i < 10; i++)
-            productsArray[i] = new Product { ID = s_rand.Next(100000, 1000000), Name = productNames[i], Price = s_rand.Next(20, 80), Category = productCategories[i], InStock = s_rand.Next(0, 50) };
+            lProduct.Add( new Product { ID = s_rand.Next(100000, 1000000), Name = productNames[i], Price = s_rand.Next(20, 80), Category = productCategories[i], InStock = s_rand.Next(0, 50) });
     }
     /// <summary>
     /// creates new orders
@@ -54,7 +56,7 @@ internal static class DataSource
         {
             t = new TimeSpan(0, s_rand.Next(60), s_rand.Next(60));
             p = s_rand.Next(10);
-            ordersArray[i] = new Order { ID = Config.OrderID, CustomerName = cName[p], CustomerAddress = cAddress[p], CustomerEmail = cEmail[p], OrderDate = DateTime.MinValue, ShipDate = DateTime.MinValue + t, DeliveryDate = DateTime.MinValue + t.Add(new TimeSpan(0, s_rand.Next(60), s_rand.Next(60))) };
+            lOrder.Add( new Order { ID = Config.OrderID, CustomerName = cName[p], CustomerAddress = cAddress[p], CustomerEmail = cEmail[p], OrderDate = DateTime.MinValue, ShipDate = DateTime.MinValue + t, DeliveryDate = DateTime.MinValue + t.Add(new TimeSpan(0, s_rand.Next(60), s_rand.Next(60))) });
         }
     }
     /// <summary>
@@ -66,7 +68,7 @@ internal static class DataSource
         for (int i = 0; i < 40; i++)
         {
             n = s_rand.Next(1, 10);
-            orderItemsArray[i] = new OrderItem { ID = Config.OrderItemID, OrderID = ordersArray[i % 20].ID, ProductID = productsArray[i % n].ID, Amount = s_rand.Next(1, 10), Price = productsArray[i % n].Price };
+            lOrderItem.Add( new OrderItem { ID = Config.OrderItemID, OrderID = lOrder[i % 20].ID, ProductID = lProduct[i % n].ID, Amount = s_rand.Next(1, 10), Price = lProduct[i % n].Price });
         }
     }
     /// <summary>
@@ -74,9 +76,6 @@ internal static class DataSource
     /// </summary>
     internal static class Config
     {
-        internal static int lastProduct = 10;
-        internal static int lastOrder = 20;
-        internal static int lastOrderItem = 40;
         private static int orderID = 1000;
         private static int orderItemID = 1000;
         public static int OrderID { get { return ++orderID; } }

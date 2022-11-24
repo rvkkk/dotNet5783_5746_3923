@@ -1,4 +1,5 @@
 ﻿using DO;
+using DalApi;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Dal;
 
-public class DalProduct
+internal class DalProduct : IProduct
 {
     /// <summary>
     /// adds a new product
@@ -18,13 +19,12 @@ public class DalProduct
     /// <exception cref="Exception"></exception>
     public int Add(Product p)
     {
-        for (int i = 0; i < DataSource.Config.lastProduct; i++)
+        for (int i = 0; i < DataSource.lProduct.Count; i++)
         {
-            if (DataSource.productsArray[i].ID == p.ID)
+            if (DataSource.lProduct[i].ID == p.ID)
                 throw new Exception("the id already exists");
         }
-        DataSource.productsArray[DataSource.Config.lastProduct] = p;
-        DataSource.Config.lastProduct++;
+        DataSource.lProduct.Add(p);
         return p.ID;
     }
     /// <summary>
@@ -35,15 +35,12 @@ public class DalProduct
     public void Delete(int ID)
     {
         bool flag = false;
-        for (int i = 0; i < DataSource.Config.lastProduct; i++)
+        for (int i = 0; i < DataSource.lProduct.Count; i++)
         {
-            if (DataSource.productsArray[i].ID == ID)
-            {
-                DataSource.Config.lastProduct--;
+            if (DataSource.lProduct[i].ID == ID)
                 flag = true;
-            }
             if (flag)
-                DataSource.productsArray[i] = DataSource.productsArray[i + 1];
+                DataSource.lProduct[i] = DataSource.lProduct[i + 1];
         }
         if (!flag)
             throw new Exception("there in no such an id");
@@ -54,10 +51,10 @@ public class DalProduct
     /// <param name="p">recived product</param>
     public void Update(Product p)
     {
-        for (int i = 0; i < DataSource.Config.lastProduct; i++)
+        for (int i = 0; i < DataSource.lProduct.Count; i++)
         {
-            if (DataSource.productsArray[i].ID == p.ID)
-                DataSource.productsArray[i] = p;
+            if (DataSource.lProduct[i].ID == p.ID)
+                DataSource.lProduct[i] = p;
         }
     }
     /// <summary>
@@ -68,11 +65,11 @@ public class DalProduct
     /// <exception cref="Exception">there in no such a product id</exception>
     public Product Get(int ID)
     {
-        for (int i = 0; i < DataSource.Config.lastProduct; i++)
+        for (int i = 0; i < DataSource.lProduct.Count; i++)
         {
-            if (DataSource.productsArray[i].ID == ID)
+            if (DataSource.lProduct[i].ID == ID)
                
-                return DataSource.productsArray[i];
+                return DataSource.lProduct[i];
         }
         throw new Exception("there in no such an id");
     }
@@ -80,13 +77,13 @@ public class DalProduct
     /// returns all products
     /// </summary>
     /// <returns>products</returns>
-    public Product[] GetAll()
+    public IEnumerable<Product> GetAll()
     {
-        Product[] products = new Product[DataSource.Config.lastProduct];
-        for (int i = 0; i < products.Length; i++)
+        List<Product> lproducts = new List<Product>();
+        for (int i = 0; i < DataSource.lProduct.Count; i++)
         {
-            products[i] = DataSource.productsArray[i];
+            lproducts.Add(DataSource.lProduct[i]);
         }
-        return products;
+        return lproducts;
     }
 }

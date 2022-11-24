@@ -1,4 +1,5 @@
 ﻿using Dal;
+using DalApi;
 using DO;
 using System;
 using System.Collections.Generic;
@@ -13,9 +14,8 @@ namespace DalTest
 {
     internal class MainRun
     {
-        private static DalOrder dalOrder = new DalOrder();
-        private static DalOrderItem dalOrderItem = new DalOrderItem();
-        private static DalProduct dalProduct = new DalProduct();
+        private static IDal dalList = new DalList();
+
         /// <summary>
         /// calls the products functions
         /// </summary>
@@ -47,7 +47,7 @@ namespace DalTest
                         p.Category = (Category)int.Parse(Console.ReadLine());
                         Console.WriteLine("enter product in stock:");
                         p.InStock = int.Parse(Console.ReadLine());
-                        ID = dalProduct.Add(p);
+                        ID = dalList.Product.Add(p);
                         Console.WriteLine($"the id of the product is: {ID}");
                         break;
                     }
@@ -55,13 +55,13 @@ namespace DalTest
                     {
                         Console.WriteLine("enter product ID:");
                         int.TryParse(Console.ReadLine(), out ID);
-                        Console.WriteLine(dalProduct.Get(ID));
+                        Console.WriteLine(dalList.Product.Get(ID));
                         break;
                     }
 
                 case 2:
                     {
-                        foreach (Product item in dalProduct.GetAll())
+                        foreach (Product item in dalList.Product.GetAll())
                             Console.WriteLine(item);
                         break;
                     }
@@ -69,7 +69,7 @@ namespace DalTest
                     {
                         Console.WriteLine("enter product ID:");
                         int.TryParse(Console.ReadLine(), out ID);
-                        Console.WriteLine(dalProduct.Get(ID));
+                        Console.WriteLine(dalList.Product.Get(ID));
                         Product p = new Product();
                         Console.WriteLine("enter product new ID:");
                         p.ID = int.Parse(Console.ReadLine());
@@ -81,7 +81,7 @@ namespace DalTest
                         p.Category = (Category)int.Parse(Console.ReadLine());
                         Console.WriteLine("enter product in stock:");
                         p.InStock = int.Parse(Console.ReadLine());
-                        dalProduct.Update(p);
+                        dalList.Product.Update(p);
                         break;
                     }
 
@@ -89,7 +89,7 @@ namespace DalTest
                     {
                         Console.WriteLine("enter product ID:");
                         int.TryParse(Console.ReadLine(), out ID);
-                        dalProduct.Delete(ID);
+                        dalList.Product.Delete(ID);
                         break;
                     }
                 default:
@@ -130,7 +130,7 @@ namespace DalTest
                         o.ShipDate = DateTime.Parse(Console.ReadLine());
                         Console.WriteLine("enter delivery date:");
                         o.DeliveryDate = DateTime.Parse(Console.ReadLine());
-                        ID = dalOrder.Add(o);
+                        ID = dalList.Order.Add(o);
                         Console.WriteLine($"the id of the order is: {ID}");
                         break;
                     }
@@ -138,12 +138,12 @@ namespace DalTest
                     {
                         Console.WriteLine("enter order ID:");
                         int.TryParse(Console.ReadLine(), out ID);
-                        Console.WriteLine(dalOrder.Get(ID));
+                        Console.WriteLine(dalList.Order.Get(ID));
                         break;
                     }
                 case 2:
                     {
-                        foreach (Order item in dalOrder.GetAll())
+                        foreach (Order item in dalList.Order.GetAll())
                             Console.WriteLine(item);
                         break;
                     }
@@ -152,7 +152,7 @@ namespace DalTest
                     {
                         Console.WriteLine("enter product ID:");
                         int.TryParse(Console.ReadLine(), out ID);
-                        Order o = dalOrder.Get(ID);
+                        Order o = dalList.Order.Get(ID);
                         Console.WriteLine(o);
                         Console.WriteLine("enter customer new name:");
                         o.CustomerName = Console.ReadLine();
@@ -166,14 +166,14 @@ namespace DalTest
                         o.ShipDate = DateTime.Parse(Console.ReadLine());
                         Console.WriteLine("enter new delivery date:");
                         o.DeliveryDate = DateTime.Parse(Console.ReadLine());
-                        dalOrder.Update(o);
+                        dalList.Order.Update(o);
                         break;
                     }
                 case 4:
                     {
                         Console.WriteLine("enter order ID:");
                         int.TryParse(Console.ReadLine(), out ID);
-                        dalOrder.Delete(ID);
+                        dalList.Order.Delete(ID);
                         break;
                     }
                 default:
@@ -211,7 +211,7 @@ namespace DalTest
                         oI.Price = int.Parse(Console.ReadLine());
                         Console.WriteLine("enter item amount:");
                         oI.Amount = int.Parse(Console.ReadLine());
-                        ID = dalOrderItem.Add(oI);
+                        ID = dalList.OrderItem.Add(oI);
                         Console.WriteLine($"the id of the order item is: {ID}");
                         break;
                     }
@@ -219,12 +219,12 @@ namespace DalTest
                     {
                         Console.WriteLine("enter order item ID:");
                         int.TryParse(Console.ReadLine(), out ID);
-                        Console.WriteLine(dalOrderItem.Get(ID));
+                        Console.WriteLine(dalList.OrderItem.Get(ID));
                         break;
                     }
                 case 2:
                     {
-                        foreach (OrderItem item in dalOrderItem.GetAll())
+                        foreach (OrderItem item in dalList.OrderItem.GetAll())
                             Console.WriteLine(item);
                         break;
                     }
@@ -233,7 +233,7 @@ namespace DalTest
 
                         Console.WriteLine("enter order item ID:");
                         int.TryParse(Console.ReadLine(), out ID);
-                        OrderItem oI = dalOrderItem.Get(ID);
+                        OrderItem oI = dalList.OrderItem.Get(ID);
                         Console.WriteLine(oI);
                         Console.WriteLine("enter product ID:");
                         oI.ProductID = int.Parse(Console.ReadLine());
@@ -243,7 +243,7 @@ namespace DalTest
                         oI.Price = int.Parse(Console.ReadLine());
                         Console.WriteLine("enter item amount:");
                         oI.Amount = int.Parse(Console.ReadLine());
-                        dalOrderItem.Update(oI);
+                        dalList.OrderItem.Update(oI);
                         break;
                     }
 
@@ -251,14 +251,14 @@ namespace DalTest
                     {
                         Console.WriteLine("enter order item ID:");
                         int.TryParse(Console.ReadLine(), out ID);
-                        dalOrderItem.Delete(ID);
+                        dalList.OrderItem.Delete(ID);
                         break;
                     }
                 case 5:
                     {
                         Console.WriteLine("enter order ID:");
                         int.TryParse(Console.ReadLine(), out ID);
-                        foreach (OrderItem item in dalOrderItem.GetOrderItemsOfOrder(ID))
+                        foreach (OrderItem item in dalList.OrderItem.GetOrderItemsOfOrder(ID))
                             Console.WriteLine(item);
                         break;
                     }
@@ -268,7 +268,7 @@ namespace DalTest
                         int IDO, IDP;
                         int.TryParse(Console.ReadLine(), out IDO);
                         int.TryParse(Console.ReadLine(), out IDP);
-                        Console.WriteLine(dalOrderItem.GetOrderItem(IDO, IDP));
+                        Console.WriteLine(dalList.OrderItem.GetOrderItem(IDO, IDP));
                         break;
                     }
                 default:

@@ -1,4 +1,5 @@
 ﻿using DO;
+using DalApi;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Dal;
 
-public class DalOrder
+internal class DalOrder : IOrder
 {
     /// <summary>
     /// adds a new order
@@ -17,8 +18,7 @@ public class DalOrder
     public int Add(Order o)
     {
         o.ID = DataSource.Config.OrderID;
-        DataSource.ordersArray[DataSource.Config.lastOrder] = o;
-        DataSource.Config.lastOrder++;
+        DataSource.lOrder.Add(o);
         return o.ID;
     }
     /// <summary>
@@ -29,15 +29,12 @@ public class DalOrder
     public void Delete(int ID)
     {
         bool flag = false;
-        for (int i = 0; i < DataSource.Config.lastOrder; i++)
+        for (int i = 0; i < DataSource.lOrder.Count; i++)
         {
-            if (DataSource.ordersArray[i].ID == ID)
-            {
-                DataSource.Config.lastOrder--;
-                flag = true;
-            }                   
+            if (DataSource.lOrder[i].ID == ID)
+                flag = true;                  
             if(flag)
-                DataSource.ordersArray[i] = DataSource.ordersArray[i+1];
+                DataSource.lOrder[i] = DataSource.lOrder[i+1];
         }
         if (!flag)
             throw new Exception("there in no such an id");
@@ -48,10 +45,10 @@ public class DalOrder
     /// <param name="o">recived order</param>
     public void Update(Order o)
     {
-        for (int i = 0; i < DataSource.Config.lastOrder; i++)
+        for (int i = 0; i < DataSource.lOrder.Count; i++)
         {
-            if (DataSource.ordersArray[i].ID == o.ID)
-                DataSource.ordersArray[i] = o;
+            if (DataSource.lOrder[i].ID == o.ID)
+                DataSource.lOrder[i] = o;
         }
     }
     /// <summary>
@@ -62,10 +59,10 @@ public class DalOrder
     /// <exception cref="Exception">there in no such an order id</exception>
     public Order Get(int ID)
     {
-        for(int i=0; i < DataSource.Config.lastOrder; i++)
+        for(int i=0; i < DataSource.lOrder.Count; i++)
         {
-            if (DataSource.ordersArray[i].ID == ID)
-                return DataSource.ordersArray[i];
+            if (DataSource.lOrder[i].ID == ID)
+                return DataSource.lOrder[i];
         }
         throw new Exception("there in no such an id");
     }
@@ -73,13 +70,13 @@ public class DalOrder
     /// returns all orders
     /// </summary>
     /// <returns>orders</returns>
-    public Order[] GetAll()
+    public IEnumerable<Order> GetAll()
     {
-        Order[] orders = new Order[DataSource.Config.lastOrder];
-        for (int i = 0; i < orders.Length; i++)
+        List<Order> lorders = new List<Order>();
+        for (int i = 0; i < DataSource.lOrder.Count; i++)
         {
-            orders[i] = DataSource.ordersArray[i];
+            lorders.Add( DataSource.lOrder[i] );
         }
-        return orders;
+        return lorders;
     }
 }
