@@ -84,7 +84,6 @@ namespace DalTest
                         dalList.Product.Update(p);
                         break;
                     }
-
                 case 4:
                     {
                         Console.WriteLine("enter product ID:");
@@ -147,7 +146,6 @@ namespace DalTest
                             Console.WriteLine(item);
                         break;
                     }
-
                 case 3:
                     {
                         Console.WriteLine("enter product ID:");
@@ -246,7 +244,6 @@ namespace DalTest
                         dalList.OrderItem.Update(oI);
                         break;
                     }
-
                 case 4:
                     {
                         Console.WriteLine("enter order item ID:");
@@ -288,51 +285,38 @@ namespace DalTest
             int show;
             do
             {
-
                 Console.WriteLine("enter 0 to exit");
                 Console.WriteLine("enter 1 to products");
                 Console.WriteLine("enter 2 to orders");
                 Console.WriteLine("enter 3 to order items");
                 int.TryParse(Console.ReadLine(), out show);
-                switch (show)
+                try
                 {
-                    case 1:
-                        try
-                        {
+                    switch (show)
+                    {
+                        case 1:
                             Products();
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine(ex);
-                        }
-                        break;
-                    case 2:
-                        try
-                        {
-                            Orders();
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine(ex);
-                        }
-                        break;
-                    case 3:
-                        try
-                        {
-                            OrderItems();
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine(ex);
-                        }
-                        break;
-
-                    default:
-                        {
-                            Console.WriteLine("enter again");
-                            int.TryParse(Console.ReadLine(), out show);
                             break;
-                        }
+                        case 2:
+                            Orders();
+                            break;
+                        case 3:
+                            OrderItems();
+                            break;
+                        default:
+                            {
+                                Console.WriteLine("enter again");
+                                break;
+                            }
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    string str = "";
+                    str += ex.GetType() + ": ";
+                    str += ex.Message;
+                    Console.WriteLine(str);
                 }
             } while (show != 0);
         }

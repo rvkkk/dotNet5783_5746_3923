@@ -47,16 +47,14 @@ internal static class DataSource
     /// </summary>
     private static void createOrders()
     {
-        TimeSpan t;
         int p;
         string[] cName = { "yael atias", "michal choen", "shira levi", "gila choen", "efrat shimoni", "yair osher", "meital ravinski", "rivka miler", "hadas rahvon", "dina levi" };
         string[] cAddress = { "aneviim 3 bnei brak", "hanatziv 67 tel aviv", "teena 45 elad", "raban gamliel 15 elad", "rabi akiva 50 bnei brak", "herzel 8 petach tikva", "nisinboim 22 bnei brak", "yaalom 7 ramat gan", "shimon hazadik 4 elad", "ben shatach 20 ramat gan" };
         string[] cEmail = { "yael@gmail.com", "mimimi@gmail.com", "shira1234@gmail.com", "choen@gmail.com", "efratii@gmail.com", "yairosher@gmail.com", "ravinski@gmail.com", "rivka2828@gmail.com", "hadasush@gmail.com", "dinale12@gmail.com" };
         for (int i = 0; i < 20; i++)
         {
-            t = new TimeSpan(0, s_rand.Next(60), s_rand.Next(60));
             p = s_rand.Next(10);
-            lOrder.Add( new Order { ID = Config.OrderID, CustomerName = cName[p], CustomerAddress = cAddress[p], CustomerEmail = cEmail[p], OrderDate = DateTime.MinValue, ShipDate = DateTime.MinValue + t, DeliveryDate = DateTime.MinValue + t.Add(new TimeSpan(0, s_rand.Next(60), s_rand.Next(60))) });
+            lOrder.Add( new Order { ID = Config.OrderID, CustomerName = cName[p], CustomerAddress = cAddress[p], CustomerEmail = cEmail[p], OrderDate = DateTime.Now, ShipDate = DateTime.MinValue, DeliveryDate = DateTime.MinValue });
         }
     }
     /// <summary>

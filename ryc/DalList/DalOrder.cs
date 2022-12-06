@@ -32,12 +32,13 @@ internal class DalOrder : IOrder
         for (int i = 0; i < DataSource.lOrder.Count; i++)
         {
             if (DataSource.lOrder[i].ID == ID)
-                flag = true;                  
-            if(flag)
-                DataSource.lOrder[i] = DataSource.lOrder[i+1];
+            {
+                DataSource.lOrder.RemoveAt(i);  
+                flag = true;  
+            }                       
         }
         if (!flag)
-            throw new Exception("there in no such an id");
+            throw new InvalidID("there in no such an id");
     }
     /// <summary>
     /// updates order
@@ -64,7 +65,7 @@ internal class DalOrder : IOrder
             if (DataSource.lOrder[i].ID == ID)
                 return DataSource.lOrder[i];
         }
-        throw new Exception("there in no such an id");
+        throw new InvalidID("there in no such an id");
     }
     /// <summary>
     /// returns all orders

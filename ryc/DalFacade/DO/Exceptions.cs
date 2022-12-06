@@ -6,7 +6,12 @@ using System.Threading.Tasks;
 
 namespace DO
 {
-    internal class Exceptions
+    public class InvalidID : Exception
     {
+        public InvalidID(string ex) : base(ex) {}
+    }
+    public class AlreadyExists : Exception
+    {
+        public AlreadyExists(string ex) : base(ex) { }
     }
 }

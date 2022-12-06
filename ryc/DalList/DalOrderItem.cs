@@ -33,12 +33,14 @@ internal class DalOrderItem : IOrderItem
         for (int i = 0; i < DataSource.lOrderItem.Count; i++)
         {
             if (DataSource.lOrderItem[i].ID == ID)
+            {
+                DataSource.lOrderItem.Remove(DataSource.lOrderItem[i]);
                 flag = true;
-            if (flag)
-                DataSource.lOrderItem[i] = DataSource.lOrderItem[i + 1];
+                break;
+            }
         }
         if (!flag)
-            throw new Exception("there in no such an id");
+            throw new InvalidID("there in no such an id");
     }
     /// <summary>
     /// updates orderItem
@@ -65,14 +67,14 @@ internal class DalOrderItem : IOrderItem
             if (DataSource.lOrderItem[i].ID == ID)
                 return DataSource.lOrderItem[i];
         }
-        throw new Exception("there in no such an id");
+        throw new InvalidID("there in no such an id");
     }
     /// <summary>
     /// returns all orderItems
     /// </summary>
     /// <returns>orderItems</returns>
     public IEnumerable<OrderItem> GetAll()
-    { 
+    {
         List<OrderItem> lorderItems = new List<OrderItem>();
         for (int i = 0; i < DataSource.lOrderItem.Count; i++)
         {
@@ -94,7 +96,7 @@ internal class DalOrderItem : IOrderItem
             if (DataSource.lOrderItem[i].OrderID == IDO && DataSource.lOrderItem[i].ProductID == IDP)
                 return DataSource.lOrderItem[i];
         }
-        throw new Exception("there in no such an order item");
+        throw new InvalidID("there in no such an order item");
     }
     /// <summary>
     /// returns orderItems that belongs to orderId

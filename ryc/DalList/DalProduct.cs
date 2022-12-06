@@ -22,7 +22,7 @@ internal class DalProduct : IProduct
         for (int i = 0; i < DataSource.lProduct.Count; i++)
         {
             if (DataSource.lProduct[i].ID == p.ID)
-                throw new Exception("the id already exists");
+                throw new AlreadyExists("the id already exists");
         }
         DataSource.lProduct.Add(p);
         return p.ID;
@@ -38,12 +38,15 @@ internal class DalProduct : IProduct
         for (int i = 0; i < DataSource.lProduct.Count; i++)
         {
             if (DataSource.lProduct[i].ID == ID)
+            {
+                DataSource.lProduct.Remove(DataSource.lProduct[i]);
                 flag = true;
-            if (flag)
-                DataSource.lProduct[i] = DataSource.lProduct[i + 1];
+                break;
+            }
+            
         }
         if (!flag)
-            throw new Exception("there in no such an id");
+            throw new InvalidID("there in no such an id");
     }
     /// <summary>
     /// updates product
@@ -68,10 +71,10 @@ internal class DalProduct : IProduct
         for (int i = 0; i < DataSource.lProduct.Count; i++)
         {
             if (DataSource.lProduct[i].ID == ID)
-               
+
                 return DataSource.lProduct[i];
         }
-        throw new Exception("there in no such an id");
+        throw new InvalidID("there in no such an id");
     }
     /// <summary>
     /// returns all products
