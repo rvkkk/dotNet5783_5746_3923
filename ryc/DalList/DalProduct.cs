@@ -21,7 +21,7 @@ internal class DalProduct : IProduct
     {
         for (int i = 0; i < DataSource.lProduct.Count; i++)
         {
-            if (DataSource.lProduct[i].ID == p.ID)
+            if (DataSource.lProduct[i]?.ID == p.ID)
                 throw new AlreadyExists("the id already exists");
         }
         DataSource.lProduct.Add(p);
@@ -37,13 +37,13 @@ internal class DalProduct : IProduct
         bool flag = false;
         for (int i = 0; i < DataSource.lProduct.Count; i++)
         {
-            if (DataSource.lProduct[i].ID == ID)
+            if (DataSource.lProduct[i]?.ID == ID)
             {
                 DataSource.lProduct.Remove(DataSource.lProduct[i]);
                 flag = true;
                 break;
             }
-            
+
         }
         if (!flag)
             throw new InvalidID("there in no such an id");
@@ -56,12 +56,12 @@ internal class DalProduct : IProduct
     {
         for (int i = 0; i < DataSource.lProduct.Count; i++)
         {
-            if (DataSource.lProduct[i].ID == p.ID)
+            if (DataSource.lProduct[i]?.ID == p.ID)
                 DataSource.lProduct[i] = p;
         }
     }
     /// <summary>
-    /// return product by id
+    /// returns product by id
     /// </summary>
     /// <param name="ID">recived product id</param>
     /// <returns>product</returns>
@@ -70,22 +70,40 @@ internal class DalProduct : IProduct
     {
         for (int i = 0; i < DataSource.lProduct.Count; i++)
         {
-            if (DataSource.lProduct[i].ID == ID)
+            if (DataSource.lProduct[i]?.ID == ID)
 
-                return DataSource.lProduct[i];
+                return (Product)DataSource.lProduct[i]!;
         }
         throw new InvalidID("there in no such an id");
+    }
+    /// <summary>
+    /// returns product by a function
+    /// </summary>
+    /// <param name="func">a delegate</param>
+    /// <returns>product</returns>
+    /// <exception cref="InvalidID">there in no such a product</exception>
+    public Product GetByF(Func<Product?, bool>? func)
+    {
+        for (int i = 0; i < DataSource.lOrder.Count; i++)
+        {
+            if (func(DataSource.lProduct[i]))
+                return (Product)DataSource.lProduct[i]!;
+        }
+        throw new InvalidID("there in no such an order");
     }
     /// <summary>
     /// returns all products
     /// </summary>
     /// <returns>products</returns>
-    public IEnumerable<Product> GetAll()
+    public IEnumerable<Product?> GetAll(Func<Product?, bool>? func = null)
     {
-        List<Product> lproducts = new List<Product>();
+        List<Product?> lproducts = new List<Product?>();
         for (int i = 0; i < DataSource.lProduct.Count; i++)
         {
-            lproducts.Add(DataSource.lProduct[i]);
+            if (func == null)
+                lproducts.Add(DataSource.lProduct[i]);
+            else if(func(DataSource.lProduct[i]))
+                lproducts.Add(DataSource.lProduct[i]);
         }
         return lproducts;
     }

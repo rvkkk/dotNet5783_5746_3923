@@ -31,7 +31,7 @@ internal class DalOrder : IOrder
         bool flag = false;
         for (int i = 0; i < DataSource.lOrder.Count; i++)
         {
-            if (DataSource.lOrder[i].ID == ID)
+            if (DataSource.lOrder[i]?.ID == ID)
             {
                 DataSource.lOrder.RemoveAt(i);  
                 flag = true;  
@@ -48,7 +48,7 @@ internal class DalOrder : IOrder
     {
         for (int i = 0; i < DataSource.lOrder.Count; i++)
         {
-            if (DataSource.lOrder[i].ID == o.ID)
+            if (DataSource.lOrder[i]?.ID == o.ID)
                 DataSource.lOrder[i] = o;
         }
     }
@@ -62,21 +62,40 @@ internal class DalOrder : IOrder
     {
         for(int i=0; i < DataSource.lOrder.Count; i++)
         {
-            if (DataSource.lOrder[i].ID == ID)
-                return DataSource.lOrder[i];
+            if (DataSource.lOrder[i]?.ID == ID)
+                return (Order)DataSource.lOrder[i]!;
         }
         throw new InvalidID("there in no such an id");
     }
     /// <summary>
+    /// returns order by a function
+    /// </summary>
+    /// <param name="func">a delegate</param>
+    /// <returns>order</returns>
+    /// <exception cref="InvalidID">there in no such an order</exception>
+    public Order GetByF(Func<Order?, bool>? func)
+    {
+        for (int i = 0; i < DataSource.lOrder.Count; i++)
+        {
+            if (func(DataSource.lOrder[i]))
+                return (Order)DataSource.lOrder[i]!;
+        }
+        throw new InvalidID("there in no such an order");
+    }
+
+    /// <summary>
     /// returns all orders
     /// </summary>
     /// <returns>orders</returns>
-    public IEnumerable<Order> GetAll()
+    public IEnumerable<Order?> GetAll(Func<Order?, bool>? func = null)
     {
-        List<Order> lorders = new List<Order>();
+        List<Order?> lorders = new List<Order?>();
         for (int i = 0; i < DataSource.lOrder.Count; i++)
         {
-            lorders.Add( DataSource.lOrder[i] );
+            if (func == null)
+                lorders.Add(DataSource.lOrder[i]);
+            else if (func(DataSource.lOrder[i]))
+                lorders.Add(DataSource.lOrder[i]);
         }
         return lorders;
     }

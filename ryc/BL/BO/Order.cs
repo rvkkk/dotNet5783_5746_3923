@@ -17,31 +17,31 @@ namespace BO
         /// <summary>
         /// name of customer
         /// </summary>
-        public string CustomerName { get; set; }
+        public string? CustomerName { get; set; }
         /// <summary>
         /// email of customer
         /// </summary>
-        public string CustomerEmail { get; set; }
+        public string? CustomerEmail { get; set; }
         /// <summary>
         /// address of customer
         /// </summary>
-        public string CustomerAddress { get; set; }
+        public string? CustomerAddress { get; set; }
         /// <summary>
         /// order status
         /// </summary>
-        public OrderStatus Status { get; set; }
+        public OrderStatus? Status { get; set; }
         /// <summary>
         /// date of order
         /// </summary>
-        public DateTime OrderDate { get; set; }
+        public DateTime? OrderDate { get; set; }
         /// <summary>
         /// date of shipping
         /// </summary>
-        public DateTime ShipDate { get; set; }
+        public DateTime? ShipDate { get; set; }
         /// <summary>
         /// date of delivery
         /// </summary>
-        public DateTime DeliveryDate { get; set; }
+        public DateTime? DeliveryDate { get; set; }
         /// <summary>
         /// list of items in order
         /// </summary>

@@ -20,9 +20,9 @@ namespace BlImplementation
         /// </summary>
         /// <returns>list of the orders</returns>
         /// <exception cref="DalException">exception from dal</exception>
-        public IEnumerable<OrderForList> GetAll()
+        public IEnumerable<OrderForList?> GetAll()
         {
-            List<BO.OrderForList> lOrders = new List<BO.OrderForList>();
+            List<BO.OrderForList?> lOrders = new List<BO.OrderForList?>();
             foreach (DO.Order order in Dal.Order.GetAll())
             {
                 int amount = 0;
@@ -35,9 +35,9 @@ namespace BlImplementation
                         price += orderItem.Price * orderItem.Amount;
                     }
                     BO.Enums.OrderStatus oStatus = BO.Enums.OrderStatus.OrderConfirmed;
-                    if (order.DeliveryDate != DateTime.MinValue)
+                    if (order.DeliveryDate != null)
                         oStatus = BO.Enums.OrderStatus.DeliveredToCustomer;
-                    else if (order.ShipDate != DateTime.MinValue)
+                    else if (order.ShipDate != null)
                         oStatus = BO.Enums.OrderStatus.Shipped;
                     lOrders.Add(new BO.OrderForList() { ID = order.ID, CustomerName = order.CustomerName, Status = oStatus, AmountOfItems = amount, TotalPrice = price });
                 }
@@ -96,7 +96,7 @@ namespace BlImplementation
             try
             {
                 DO.Order oD = Dal.Order.Get(ID);
-                if (oD.ShipDate != DateTime.MinValue)
+                if (oD.ShipDate != null)
                     throw new BO.AlreadyDone("the order alredy shiped");
                 oD.ShipDate = DateTime.Now;
                 try
@@ -132,7 +132,7 @@ namespace BlImplementation
             try
             {
                 DO.Order oD = Dal.Order.Get(ID);
-                if (oD.ShipDate == DateTime.MinValue || oD.DeliveryDate != DateTime.MinValue)
+                if (oD.ShipDate == null || oD.DeliveryDate != null)
                     throw new BO.AlreadyDone("the order alredy delivered");
                 oD.DeliveryDate = DateTime.Now;
                 try
@@ -172,9 +172,9 @@ namespace BlImplementation
                 DO.Order oD = Dal.Order.Get(ID);
                 try
                 {
-                    if (oD.ShipDate != DateTime.MinValue)
+                    if (oD.ShipDate != null)
                         throw new BO.AlreadyDone("the order alredy shiped");
-                    DO.OrderItem item = Dal.OrderItem.GetOrderItemsOfOrder(ID).First(x => x.ProductID == product);
+                    DO.OrderItem item = Dal.OrderItem.GetOrderItemsOfOrder(ID).First(x => x?.ProductID == product) ?? throw new DalException("error in getting items in order", new Exception("error"));
                     item.Amount = amount;
                     try
                     {
@@ -207,17 +207,17 @@ namespace BlImplementation
             try
             {
                 DO.Order oD = Dal.Order.Get(ID);
-                List<Tuple<DateTime, string>> lOrderT = new List<Tuple<DateTime, string>>();
+                List<Tuple<DateTime?, string?>?> lOrderT = new List<Tuple<DateTime?, string?>?>();
                 BO.Enums.OrderStatus oStatus = BO.Enums.OrderStatus.OrderConfirmed;
-                lOrderT.Add(new Tuple<DateTime, string>(oD.OrderDate, "The order has been created"));
+                lOrderT.Add(new Tuple<DateTime?, string?>(oD.OrderDate, "The order has been created"));
                 if (oD.ShipDate != DateTime.MinValue)
                 {
-                    lOrderT.Add(new Tuple<DateTime, string>(oD.ShipDate, "The order has been sent"));
+                    lOrderT.Add(new Tuple<DateTime?, string?>(oD.ShipDate, "The order has been sent"));
                     oStatus = BO.Enums.OrderStatus.Shipped;
                 }
                 if (oD.DeliveryDate != DateTime.MinValue)
                 {
-                    lOrderT.Add(new Tuple<DateTime, string>(oD.DeliveryDate, "The order has been delivered"));
+                    lOrderT.Add(new Tuple<DateTime?, string?>(oD.DeliveryDate, "The order has been delivered"));
                     oStatus = BO.Enums.OrderStatus.DeliveredToCustomer;
                 }
                 BO.OrderTracking orderTracking = new BO.OrderTracking() { ID = ID, Status = oStatus, list = lOrderT };

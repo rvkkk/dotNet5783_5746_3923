@@ -16,7 +16,7 @@ namespace BO
         /// <summary>
         /// name of product
         /// </summary>
-        public string Name { get; set; }
+        public string? Name { get; set; }
         /// <summary>
         /// price of product
         /// </summary>
@@ -24,7 +24,7 @@ namespace BO
         /// <summary>
         /// category of product
         /// </summary>
-        public Category Category { get; set; }
+        public Category? Category { get; set; }
         /// <summary>
         /// if the product exist in stock
         /// </summary>

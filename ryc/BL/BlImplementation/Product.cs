@@ -17,10 +17,11 @@ namespace BlImplementation
         /// returns all the exist products
         /// </summary>
         /// <returns>list of the products</returns>
-        public IEnumerable<BO.ProductForList> GetAll()
+        /// 
+        public IEnumerable<BO.ProductForList?> GetAll(Func<BO.Product?, bool>? func = null)
         {
-            List<BO.ProductForList> lproducts = new List<BO.ProductForList>();
-            foreach (DO.Product product in Dal.Product.GetAll())
+            List<BO.ProductForList?> lproducts = new List<BO.ProductForList?>();
+            foreach (DO.Product product in Dal.Product.GetAll())//func
             {
                 lproducts.Add(new BO.ProductForList() { ID = product.ID, Name = product.Name, Category = (BO.Enums.Category)Enum.Parse(typeof(DO.Enums.Category), product.Category.ToString()), Price = product.Price });
             }

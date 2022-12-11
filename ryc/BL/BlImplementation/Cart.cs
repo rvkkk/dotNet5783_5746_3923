@@ -21,13 +21,13 @@ namespace BlImplementation
         /// <exception cref="DalException">exception from dal</exception>
         public BO.Cart AddToCart(BO.Cart cart, int ID)
         {
+            foreach (BO.OrderItem item in cart.Items)
+            {
+                if (item.ProductID == ID)
+                    throw new BO.AlreadyExists("the product already exists");
+            }
             try
             {
-                foreach (BO.OrderItem item in cart.Items)
-                {
-                    if (item.ProductID == ID)
-                        throw new BO.AlreadyExists("the product already exists");
-                }
                 DO.Product product = Dal.Product.Get(ID);
                 if (product.InStock == 0)
                     throw new LessAmount("there is much amount of the product in shop");
@@ -47,11 +47,11 @@ namespace BlImplementation
         /// <exception cref="DalException">exception from dal</exception>
         public BO.Cart UpdateCart(BO.Cart cart, int ID, int amount)
         {
+            BO.OrderItem item = cart.Items.FirstOrDefault(x => x.ProductID == ID);
+            if (item == null)
+                throw new InvalidID("there is no such an id in the cart");
             try
             {
-                BO.OrderItem item = cart.Items.FirstOrDefault(x => x.ProductID == ID);
-                if (item == null)
-                    throw new InvalidID("there is no such an id in the cart");
                 if (amount == 0)
                 {
                     cart.TotalPrice -= cart.Items.FirstOrDefault(x => x.ProductID == ID).TotalPrice;
@@ -88,7 +88,7 @@ namespace BlImplementation
             {
                 try
                 {
-                    DO.Product product = Dal.Product.Get(orderItem.ProductID);
+                    DO.Product product = Dal.Product.Get((int)orderItem?.ProductID!);
                     if (orderItem.Amount <= 0)
                         throw new LessAmount("there is invalid amount of product");
                     if (product.InStock - orderItem.Amount < 0)

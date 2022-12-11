@@ -13,9 +13,9 @@ namespace Dal;
 internal static class DataSource
 {
     public static readonly Random s_rand = new Random();
-    internal static List<Product> lProduct = new List<Product>();
-    internal static List<Order> lOrder = new List<Order>();  
-    internal static List<OrderItem> lOrderItem = new List<OrderItem>();
+    internal static List<Product?> lProduct = new List<Product?>();
+    internal static List<Order?> lOrder = new List<Order?>();  
+    internal static List<OrderItem?> lOrderItem = new List<OrderItem?>();
     /// <summary>
     /// static constructor
     /// </summary>
@@ -54,7 +54,7 @@ internal static class DataSource
         for (int i = 0; i < 20; i++)
         {
             p = s_rand.Next(10);
-            lOrder.Add( new Order { ID = Config.OrderID, CustomerName = cName[p], CustomerAddress = cAddress[p], CustomerEmail = cEmail[p], OrderDate = DateTime.Now, ShipDate = DateTime.MinValue, DeliveryDate = DateTime.MinValue });
+            lOrder.Add( new Order { ID = Config.OrderID, CustomerName = cName[p], CustomerAddress = cAddress[p], CustomerEmail = cEmail[p], OrderDate = DateTime.Now, ShipDate = null, DeliveryDate = null });
         }
     }
     /// <summary>
@@ -66,7 +66,7 @@ internal static class DataSource
         for (int i = 0; i < 40; i++)
         {
             n = s_rand.Next(1, 10);
-            lOrderItem.Add( new OrderItem { ID = Config.OrderItemID, OrderID = lOrder[i % 20].ID, ProductID = lProduct[i % n].ID, Amount = s_rand.Next(1, 10), Price = lProduct[i % n].Price });
+            lOrderItem.Add( new OrderItem { ID = Config.OrderItemID, OrderID = (int)lOrder[i % 20]?.ID!, ProductID = (int)lProduct[i % n]?.ID!, Amount = s_rand.Next(1, 10), Price = (double)lProduct[i % n]?.Price! });
         }
     }
     /// <summary>

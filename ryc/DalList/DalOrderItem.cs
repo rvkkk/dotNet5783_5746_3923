@@ -32,7 +32,7 @@ internal class DalOrderItem : IOrderItem
         bool flag = false;
         for (int i = 0; i < DataSource.lOrderItem.Count; i++)
         {
-            if (DataSource.lOrderItem[i].ID == ID)
+            if (DataSource.lOrderItem[i]?.ID == ID)
             {
                 DataSource.lOrderItem.Remove(DataSource.lOrderItem[i]);
                 flag = true;
@@ -50,7 +50,7 @@ internal class DalOrderItem : IOrderItem
     {
         for (int i = 0; i < DataSource.lOrderItem.Count; i++)
         {
-            if (DataSource.lOrderItem[i].ID == o.ID)
+            if (DataSource.lOrderItem[i]?.ID == o.ID)
                 DataSource.lOrderItem[i] = o;
         }
     }
@@ -64,21 +64,39 @@ internal class DalOrderItem : IOrderItem
     {
         for (int i = 0; i < DataSource.lOrderItem.Count; i++)
         {
-            if (DataSource.lOrderItem[i].ID == ID)
-                return DataSource.lOrderItem[i];
+            if (DataSource.lOrderItem[i]?.ID == ID)
+                return (OrderItem)DataSource.lOrderItem[i]!;
         }
         throw new InvalidID("there in no such an id");
+    }
+    /// <summary>
+    /// returns orderItem by a function
+    /// </summary>
+    /// <param name="func">a delegate</param>
+    /// <returns>orderItem</returns>
+    /// <exception cref="InvalidID">there in no such an orderItem</exception>
+    public OrderItem GetByF(Func<OrderItem?, bool>? func)
+    {
+        for (int i = 0; i < DataSource.lOrderItem.Count; i++)
+        {
+            if (func(DataSource.lOrderItem[i]))
+                return (OrderItem)DataSource.lOrderItem[i]!;
+        }
+        throw new InvalidID("there in no such an order item");
     }
     /// <summary>
     /// returns all orderItems
     /// </summary>
     /// <returns>orderItems</returns>
-    public IEnumerable<OrderItem> GetAll()
+    public IEnumerable<OrderItem?> GetAll(Func<OrderItem?, bool>? func = null)
     {
-        List<OrderItem> lorderItems = new List<OrderItem>();
+        List<OrderItem?> lorderItems = new List<OrderItem?>();
         for (int i = 0; i < DataSource.lOrderItem.Count; i++)
         {
-            lorderItems.Add(DataSource.lOrderItem[i]);
+            if (func == null)
+                lorderItems.Add(DataSource.lOrderItem[i]);
+            else if (func(DataSource.lOrderItem[i]))
+                lorderItems.Add(DataSource.lOrderItem[i]);
         }
         return lorderItems;
     }
@@ -89,28 +107,28 @@ internal class DalOrderItem : IOrderItem
     /// <param name="IDP">recived product id</param>
     /// <returns>orderItem</returns>
     /// <exception cref="Exception">there in no such an order item</exception>
-    public OrderItem GetOrderItem(int IDO, int IDP)
-    {
-        for (int i = 0; i < DataSource.lOrderItem.Count; i++)
-        {
-            if (DataSource.lOrderItem[i].OrderID == IDO && DataSource.lOrderItem[i].ProductID == IDP)
-                return DataSource.lOrderItem[i];
-        }
-        throw new InvalidID("there in no such an order item");
-    }
+    //public OrderItem GetOrderItem(int IDO, int IDP)
+    //{
+    //    for (int i = 0; i < DataSource.lOrderItem.Count; i++)
+    //    {
+    //        if (DataSource.lOrderItem[i]?.OrderID == IDO && DataSource.lOrderItem[i]?.ProductID == IDP)
+    //            return (OrderItem)DataSource.lOrderItem[i]!;
+    //    }
+    //    throw new InvalidID("there in no such an order item");
+    //}
     /// <summary>
     /// returns orderItems that belongs to orderId
     /// </summary>
     /// <param name="IDO">recived order id</param>
     /// <returns>an array of orderItems</returns>
-    public IEnumerable<OrderItem> GetOrderItemsOfOrder(int IDO)
-    {
-        List<OrderItem> lorderItems = new List<OrderItem>();
-        for (int i = 0; i < DataSource.lOrderItem.Count; i++)
-        {
-            if (DataSource.lOrderItem[i].OrderID == IDO)
-                lorderItems.Add(DataSource.lOrderItem[i]);
-        }
-        return lorderItems;
-    }
+    //public IEnumerable<OrderItem?> GetOrderItemsOfOrder(int IDO)
+    //{
+    //    List<OrderItem?> lorderItems = new List<OrderItem?>();
+    //    for (int i = 0; i < DataSource.lOrderItem.Count; i++)
+    //    {
+    //        if (DataSource.lOrderItem[i]?.OrderID == IDO)
+    //            lorderItems.Add(DataSource.lOrderItem[i]);
+    //    }
+    //    return lorderItems;
+    //}  
 }

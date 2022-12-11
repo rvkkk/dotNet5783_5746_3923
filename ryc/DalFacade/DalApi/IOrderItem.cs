@@ -9,7 +9,5 @@ namespace DalApi
 {
     public interface IOrderItem : ICrud<OrderItem>
     {
-        public OrderItem GetOrderItem(int IDO, int IDP);
-        public IEnumerable<OrderItem> GetOrderItemsOfOrder(int IDO);
     }
 }

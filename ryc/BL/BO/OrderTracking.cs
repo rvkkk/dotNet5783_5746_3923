@@ -16,11 +16,11 @@ namespace BO
         /// <summary>
         /// order status
         /// </summary>
-        public OrderStatus Status { get; set; }
+        public OrderStatus? Status { get; set; }
         /// <summary>
         /// list of satuses of order
         /// </summary>
-        public List<Tuple<DateTime, string>> list { get; set; }
+        public List<Tuple<DateTime?, string?>?> list { get; set; }
         /// <summary>
         /// get a string that represents order tracking
         /// </summary>

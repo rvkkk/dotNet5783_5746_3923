@@ -7,12 +7,13 @@ using System.Threading.Tasks;
 
 namespace DalApi
 {
-    public interface ICrud<T>
+    public interface ICrud<T> where T : struct
     {
         public int Add(T t);
         public void Delete(int ID);
         public void Update(T t);
         public T Get(int ID);
-        public IEnumerable<T> GetAll();
+        public T GetByF(Func<T?, bool>? func);
+        public IEnumerable<T?> GetAll(Func<T?, bool>? func = null);
     }
 }

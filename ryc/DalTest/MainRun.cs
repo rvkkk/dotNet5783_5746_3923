@@ -255,7 +255,7 @@ namespace DalTest
                     {
                         Console.WriteLine("enter order ID:");
                         int.TryParse(Console.ReadLine(), out ID);
-                        foreach (OrderItem item in dalList.OrderItem.GetOrderItemsOfOrder(ID))
+                        foreach (OrderItem item in dalList.OrderItem.GetAll((OrderItem o) => o.OrderID == ID ))
                             Console.WriteLine(item);
                         break;
                     }
@@ -265,7 +265,7 @@ namespace DalTest
                         int IDO, IDP;
                         int.TryParse(Console.ReadLine(), out IDO);
                         int.TryParse(Console.ReadLine(), out IDP);
-                        Console.WriteLine(dalList.OrderItem.GetOrderItem(IDO, IDP));
+                        Console.WriteLine(dalList.OrderItem.GetByF((OrderItem o) => { return o.OrderID == IDO && o.ProductID == IDP }));
                         break;
                     }
                 default:
@@ -274,7 +274,6 @@ namespace DalTest
                         int.TryParse(Console.ReadLine(), out choose);
                         break;
                     }
-
             }
         }
         /// <summary>
