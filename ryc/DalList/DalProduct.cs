@@ -86,7 +86,7 @@ internal class DalProduct : IProduct
     {
         for (int i = 0; i < DataSource.lOrder.Count; i++)
         {
-            if (func(DataSource.lProduct[i]))
+            if (func!(DataSource.lProduct[i]))
                 return (Product)DataSource.lProduct[i]!;
         }
         throw new InvalidID("there in no such an order");

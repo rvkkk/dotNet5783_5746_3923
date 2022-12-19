@@ -11,7 +11,7 @@ namespace BO
         /// <summary>
         /// an enum of burgeranch categories
         /// </summary>
-        public enum Category { BURGERS, EXTRAS, DESSERTS, JUICES, FOODֹ_COMBOS };
+        public enum Category { BURGERS, EXTRAS, DESSERTS, JUICES, FOODֹ_COMBOS, NONE };
         /// <summary>
         /// an enum of order status
         /// </summary>

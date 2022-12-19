@@ -41,11 +41,11 @@ namespace BlTest
                         Console.WriteLine("enter product name:");
                         p.Name = Console.ReadLine();
                         Console.WriteLine("enter product price:");
-                        p.Price = int.Parse(Console.ReadLine());
+                        p.Price = int.Parse(Console.ReadLine() ?? throw new Exception("price was empty"));
                         Console.WriteLine("enter product category: press 0 to BURGERS, press 1 to EXTRAS, press 2 to DESSERTS, press 3 to JUICES, press 4 to FOODֹ_COMBOS");
-                        p.Category = (BO.Enums.Category)int.Parse(Console.ReadLine());
+                        p.Category = (BO.Enums.Category)int.Parse(Console.ReadLine() ?? throw new Exception("category was empty"));
                         Console.WriteLine("enter product in stock:");
-                        p.InStock = int.Parse(Console.ReadLine());
+                        p.InStock = int.Parse(Console.ReadLine() ?? throw new Exception("number in stock was empty"));
                         bl.Product.Add(p);
                         break;
                     }
@@ -65,7 +65,7 @@ namespace BlTest
                     break;
                 case 3:
                     {
-                        foreach (ProductForList item in bl.Product.GetAll())
+                        foreach (ProductForList? item in bl.Product.GetAll())
                             Console.WriteLine(item);
                         break;
                     }
@@ -79,11 +79,11 @@ namespace BlTest
                         Console.WriteLine("enter product new name:");
                         p.Name = Console.ReadLine();
                         Console.WriteLine("enter product new price:");
-                        p.Price = int.Parse(Console.ReadLine());
+                        p.Price = int.Parse(Console.ReadLine() ?? throw new Exception("price was empty"));
                         Console.WriteLine("enter product new category: press 0 to BURGERS, press 1 to EXTRAS, press 2 to DESSERTS, press 3 to JUICES, press 4 to FOODֹ_COMBOS");
-                        p.Category = (BO.Enums.Category)int.Parse(Console.ReadLine());
+                        p.Category = (BO.Enums.Category)int.Parse(Console.ReadLine() ?? throw new Exception("category was empty"));
                         Console.WriteLine("enter product in stock:");
-                        p.InStock = int.Parse(Console.ReadLine());
+                        p.InStock = int.Parse(Console.ReadLine() ?? throw new Exception("number in stock was empty"));
                         bl.Product.Update(p);
                         break;
                     }
@@ -125,7 +125,7 @@ namespace BlTest
                     }
                 case 1:
                     {
-                        foreach (OrderForList item in bl.Order.GetAll())
+                        foreach (OrderForList? item in bl.Order.GetAll())
                             Console.WriteLine(item);
                         break;
                     }
@@ -214,7 +214,7 @@ namespace BlTest
         {
             int show;
             Cart c = new Cart() { CustomerName = "rivki kreisman", CustomerAddress = "raban gamliel 15 elad", CustomerEmail = "rvkk2828@gmail.com", Items = { }, TotalPrice = 0 };
-            c.Items = new List<OrderItem>();
+            c.Items = new List<OrderItem?>();
             do
             {
                 Console.WriteLine("enter 0 to exit");

@@ -31,14 +31,27 @@ namespace PL.Products
 
         private void ProductCategoriesSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            e as ItemCollection;
-            e.SelectedItem
-            ProductsListView.ItemsSource = bl.Product.GetAll((BO.Product p)=> );
+            var s = sender as ComboBox;
+            if (ProductCategoriesSelector.SelectedItem.ToString() == "NONE")
+                ProductsListView.ItemsSource = bl.Product.GetAll();
+            else
+                ProductsListView.ItemsSource = bl.Product.GetAll((BO.Product? p) => p?.Category == (BO.Enums.Category)s!.SelectedIndex);
         }
 
         private void AddProductButton_Click(object sender, RoutedEventArgs e)
         {
-            new ProductWindow().Show();
+            new ProductWindow().ShowDialog();
+            ProductsListView.ItemsSource = bl.Product.GetAll();
         }
+
+        private void ProductsListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            ListView l = sender as ListView;
+            BO.ProductForList pL = (BO.ProductForList)l!.SelectedItem;
+            BO.Product p = bl.Product.Get(pL.ID);
+            new ProductWindow(p).ShowDialog();
+            ProductsListView.ItemsSource = bl.Product.GetAll();
+        }
+
     }
 }

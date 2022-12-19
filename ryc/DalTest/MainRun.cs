@@ -42,11 +42,11 @@ namespace DalTest
                         Console.WriteLine("enter product name:");
                         p.Name = Console.ReadLine();
                         Console.WriteLine("enter product price:");
-                        p.Price = int.Parse(Console.ReadLine());
+                        p.Price = int.Parse(Console.ReadLine() ?? throw new Exception("price was empty"));
                         Console.WriteLine("enter product category: press 0 to BURGERS, press 1 to EXTRAS, press 2 to DESSERTS, press 3 to JUICES, press 4 to FOODֹ_COMBOS");
-                        p.Category = (Category)int.Parse(Console.ReadLine());
+                        p.Category = (Category)int.Parse(Console.ReadLine() ?? throw new Exception("category was empty"));
                         Console.WriteLine("enter product in stock:");
-                        p.InStock = int.Parse(Console.ReadLine());
+                        p.InStock = int.Parse(Console.ReadLine() ?? throw new Exception("number in stock was empty"));
                         ID = dalList.Product.Add(p);
                         Console.WriteLine($"the id of the product is: {ID}");
                         break;
@@ -61,7 +61,7 @@ namespace DalTest
 
                 case 2:
                     {
-                        foreach (Product item in dalList.Product.GetAll())
+                        foreach (Product? item in dalList.Product.GetAll())
                             Console.WriteLine(item);
                         break;
                     }
@@ -72,15 +72,15 @@ namespace DalTest
                         Console.WriteLine(dalList.Product.Get(ID));
                         Product p = new Product();
                         Console.WriteLine("enter product new ID:");
-                        p.ID = int.Parse(Console.ReadLine());
+                        p.ID = int.Parse(Console.ReadLine() ?? throw new Exception("ID was empty"));
                         Console.WriteLine("enter product new name:");
                         p.Name = Console.ReadLine();
                         Console.WriteLine("enter product new price:");
-                        p.Price = int.Parse(Console.ReadLine());
+                        p.Price = int.Parse(Console.ReadLine() ?? throw new Exception("price was empty"));
                         Console.WriteLine("enter product new category:");
-                        p.Category = (Category)int.Parse(Console.ReadLine());
+                        p.Category = (Category)int.Parse(Console.ReadLine() ?? throw new Exception("category was empty"));
                         Console.WriteLine("enter product in stock:");
-                        p.InStock = int.Parse(Console.ReadLine());
+                        p.InStock = int.Parse(Console.ReadLine() ?? throw new Exception("number in stock was empty")  );
                         dalList.Product.Update(p);
                         break;
                     }
@@ -124,11 +124,11 @@ namespace DalTest
                         Console.WriteLine("enter customer address:");
                         o.CustomerAddress = Console.ReadLine();//check
                         Console.WriteLine("enter order date:");
-                        o.OrderDate = DateTime.Parse(Console.ReadLine());
+                        o.OrderDate = DateTime.Parse(Console.ReadLine() ?? throw new Exception("order date was empty"));
                         Console.WriteLine("enter ship date:");
-                        o.ShipDate = DateTime.Parse(Console.ReadLine());
+                        o.ShipDate = DateTime.Parse(Console.ReadLine() ?? throw new Exception("ship date was empty"));
                         Console.WriteLine("enter delivery date:");
-                        o.DeliveryDate = DateTime.Parse(Console.ReadLine());
+                        o.DeliveryDate = DateTime.Parse(Console.ReadLine() ?? throw new Exception("delivery date was empty"));
                         ID = dalList.Order.Add(o);
                         Console.WriteLine($"the id of the order is: {ID}");
                         break;
@@ -142,7 +142,7 @@ namespace DalTest
                     }
                 case 2:
                     {
-                        foreach (Order item in dalList.Order.GetAll())
+                        foreach (Order? item in dalList.Order.GetAll())
                             Console.WriteLine(item);
                         break;
                     }
@@ -159,11 +159,11 @@ namespace DalTest
                         Console.WriteLine("enter customer new address:");
                         o.CustomerAddress = Console.ReadLine();
                         Console.WriteLine("enter new order date:");
-                        o.OrderDate = DateTime.Parse(Console.ReadLine());
+                        o.OrderDate = DateTime.Parse(Console.ReadLine() ?? throw new Exception("order date was empty"));
                         Console.WriteLine("enter new ship date:");
-                        o.ShipDate = DateTime.Parse(Console.ReadLine());
+                        o.ShipDate = DateTime.Parse(Console.ReadLine() ?? throw new Exception("ship date was empty"));
                         Console.WriteLine("enter new delivery date:");
-                        o.DeliveryDate = DateTime.Parse(Console.ReadLine());
+                        o.DeliveryDate = DateTime.Parse(Console.ReadLine() ?? throw new Exception("delivery date was empty"));
                         dalList.Order.Update(o);
                         break;
                     }
@@ -202,13 +202,13 @@ namespace DalTest
                     {
                         OrderItem oI = new OrderItem();
                         Console.WriteLine("enter product ID:");
-                        oI.ProductID = int.Parse(Console.ReadLine());
+                        oI.ProductID = int.Parse(Console.ReadLine() ?? throw new Exception("product ID was empty"));
                         Console.WriteLine("enter order ID:");
-                        oI.OrderID = int.Parse(Console.ReadLine());
+                        oI.OrderID = int.Parse(Console.ReadLine() ?? throw new Exception("order ID was empty"));
                         Console.WriteLine("enter item price:");
-                        oI.Price = int.Parse(Console.ReadLine());
+                        oI.Price = int.Parse(Console.ReadLine() ?? throw new Exception("item price was empty"));
                         Console.WriteLine("enter item amount:");
-                        oI.Amount = int.Parse(Console.ReadLine());
+                        oI.Amount = int.Parse(Console.ReadLine() ?? throw new Exception("item amount was empty"));
                         ID = dalList.OrderItem.Add(oI);
                         Console.WriteLine($"the id of the order item is: {ID}");
                         break;
@@ -222,7 +222,7 @@ namespace DalTest
                     }
                 case 2:
                     {
-                        foreach (OrderItem item in dalList.OrderItem.GetAll())
+                        foreach (OrderItem? item in dalList.OrderItem.GetAll())
                             Console.WriteLine(item);
                         break;
                     }
@@ -234,13 +234,13 @@ namespace DalTest
                         OrderItem oI = dalList.OrderItem.Get(ID);
                         Console.WriteLine(oI);
                         Console.WriteLine("enter product ID:");
-                        oI.ProductID = int.Parse(Console.ReadLine());
+                        oI.ProductID = int.Parse(Console.ReadLine() ?? throw new Exception("product ID was empty"));
                         Console.WriteLine("enter order ID:");
-                        oI.OrderID = int.Parse(Console.ReadLine());
+                        oI.OrderID = int.Parse(Console.ReadLine() ?? throw new Exception("order ID was empty"));
                         Console.WriteLine("enter item price:");
-                        oI.Price = int.Parse(Console.ReadLine());
+                        oI.Price = int.Parse(Console.ReadLine() ?? throw new Exception("item price was empty"));
                         Console.WriteLine("enter item amount:");
-                        oI.Amount = int.Parse(Console.ReadLine());
+                        oI.Amount = int.Parse(Console.ReadLine() ?? throw new Exception("item amount was empty"));
                         dalList.OrderItem.Update(oI);
                         break;
                     }
@@ -255,7 +255,7 @@ namespace DalTest
                     {
                         Console.WriteLine("enter order ID:");
                         int.TryParse(Console.ReadLine(), out ID);
-                        foreach (OrderItem item in dalList.OrderItem.GetAll((OrderItem o) => o.OrderID == ID ))
+                        foreach (OrderItem? item in dalList.OrderItem.GetAll((OrderItem? orderItem) => orderItem?.OrderID == ID))
                             Console.WriteLine(item);
                         break;
                     }
@@ -265,7 +265,7 @@ namespace DalTest
                         int IDO, IDP;
                         int.TryParse(Console.ReadLine(), out IDO);
                         int.TryParse(Console.ReadLine(), out IDP);
-                        Console.WriteLine(dalList.OrderItem.GetByF((OrderItem o) => { return o.OrderID == IDO && o.ProductID == IDP }));
+                        Console.WriteLine(dalList.OrderItem.GetByF((OrderItem? o) => { return o?.OrderID == IDO && o?.ProductID == IDP; }));
                         break;
                     }
                 default:

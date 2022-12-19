@@ -1,6 +1,7 @@
 ﻿using BlApi;
 using BO;
 using Dal;
+using DO;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -23,23 +24,23 @@ namespace BlImplementation
         public IEnumerable<OrderForList?> GetAll()
         {
             List<BO.OrderForList?> lOrders = new List<BO.OrderForList?>();
-            foreach (DO.Order order in Dal.Order.GetAll())
+            foreach (DO.Order? order in Dal.Order.GetAll())
             {
                 int amount = 0;
                 double price = 0;
                 try
                 {
-                    foreach (DO.OrderItem orderItem in Dal.OrderItem.GetOrderItemsOfOrder(order.ID))
+                    foreach (DO.OrderItem? orderItem in Dal.OrderItem.GetAll((DO.OrderItem? orderItem) => orderItem?.OrderID == order?.ID))
                     {
                         amount++;
-                        price += orderItem.Price * orderItem.Amount;
+                        price += orderItem?.Price * orderItem?.Amount ?? 0;
                     }
                     BO.Enums.OrderStatus oStatus = BO.Enums.OrderStatus.OrderConfirmed;
-                    if (order.DeliveryDate != null)
+                    if (order?.DeliveryDate != null)
                         oStatus = BO.Enums.OrderStatus.DeliveredToCustomer;
-                    else if (order.ShipDate != null)
+                    else if (order?.ShipDate != null)
                         oStatus = BO.Enums.OrderStatus.Shipped;
-                    lOrders.Add(new BO.OrderForList() { ID = order.ID, CustomerName = order.CustomerName, Status = oStatus, AmountOfItems = amount, TotalPrice = price });
+                    lOrders.Add(new BO.OrderForList() { ID = (int)order?.ID!, CustomerName = order?.CustomerName, Status = oStatus, AmountOfItems = amount, TotalPrice = price });
                 }
                 catch (Exception ex) { throw new DalException("error in getting items in order", ex); }
             }
@@ -63,15 +64,15 @@ namespace BlImplementation
                 List<BO.OrderItem> lItems = new List<BO.OrderItem>();
                 try
                 {
-                    foreach (DO.OrderItem orderItem in Dal.OrderItem.GetOrderItemsOfOrder(ID))
+                    foreach (DO.OrderItem? orderItem in Dal.OrderItem.GetAll((DO.OrderItem? orderItem) => orderItem?.OrderID == ID))
                     {
                         try
                         {
-                            DO.Product p = Dal.Product.Get(orderItem.ProductID);
-                            lItems.Add(new BO.OrderItem() { ID = orderItem.ID, ProductID = p.ID, ProductName = p.Name, ProductPrice = p.Price, Amount = orderItem.Amount, TotalPrice = p.Price * orderItem.Amount });
+                            DO.Product p = Dal.Product.Get((int)orderItem?.ProductID!);
+                            lItems.Add(new BO.OrderItem() { ID = (int)orderItem?.ID!, ProductID = p.ID, ProductName = p.Name, ProductPrice = p.Price, Amount = (int)orderItem?.Amount!, TotalPrice = p.Price * (int)orderItem?.Amount! });
                         }
                         catch (Exception ex) { throw new DalException("error in getting a product", ex); }
-                        price += orderItem.Price;
+                        price += orderItem?.Price ?? 0;
                     }
                     BO.Enums.OrderStatus oStatus = BO.Enums.OrderStatus.OrderConfirmed;
                     if (oD.DeliveryDate != DateTime.MinValue)
@@ -106,13 +107,13 @@ namespace BlImplementation
                 catch (Exception ex) { throw new DalException("error in updating an order", ex); }
                 double price = 0;
                 List<BO.OrderItem> lItems = new List<BO.OrderItem>();
-                foreach (DO.OrderItem orderItem in Dal.OrderItem.GetOrderItemsOfOrder(ID))
+                foreach (DO.OrderItem? orderItem in Dal.OrderItem.GetAll((DO.OrderItem? orderItem) => orderItem?.OrderID == ID))
                 {
                     try
                     {
-                        DO.Product p = Dal.Product.Get(orderItem.ProductID);
-                        lItems.Add(new BO.OrderItem() { ID = orderItem.ID, ProductID = p.ID, ProductName = p.Name, ProductPrice = p.Price, Amount = orderItem.Amount, TotalPrice = p.Price * orderItem.Amount });
-                        price += orderItem.Price;
+                        DO.Product p = Dal.Product.Get((int)orderItem?.ProductID!);
+                        lItems.Add(new BO.OrderItem() { ID = (int)orderItem?.ID!, ProductID = p.ID, ProductName = p.Name, ProductPrice = p.Price, Amount = (int)orderItem?.Amount!, TotalPrice = p.Price * (int)orderItem?.Amount! });
+                        price += orderItem?.Price ?? 0;
                     }
                     catch (Exception ex) { throw new DalException("error in getting a product", ex); }
                 }
@@ -142,13 +143,13 @@ namespace BlImplementation
                 catch (Exception ex) { throw new DalException("error in updating an order", ex); }
                 double price = 0;
                 List<BO.OrderItem> lItems = new List<BO.OrderItem>();
-                foreach (DO.OrderItem orderItem in Dal.OrderItem.GetOrderItemsOfOrder(ID))
+                foreach (DO.OrderItem? orderItem in Dal.OrderItem.GetAll((DO.OrderItem? orderItem) => orderItem?.OrderID == ID))
                 {
                     try
                     {
-                        DO.Product p = Dal.Product.Get(orderItem.ProductID);
-                        lItems.Add(new BO.OrderItem() { ID = orderItem.ID, ProductID = p.ID, ProductName = p.Name, ProductPrice = p.Price, Amount = orderItem.Amount, TotalPrice = p.Price * orderItem.Amount });
-                        price += orderItem.Price;
+                        DO.Product p = Dal.Product.Get((int)orderItem?.ProductID!);
+                        lItems.Add(new BO.OrderItem() { ID = (int)orderItem?.ID!, ProductID = p.ID, ProductName = p.Name, ProductPrice = p.Price, Amount = (int)orderItem?.Amount!, TotalPrice = p.Price * (int)orderItem?.Amount! });
+                        price += orderItem?.Price ?? 0;
                     }
                     catch (Exception ex) { throw new DalException("error in getting a product", ex); }
                 }
@@ -174,7 +175,7 @@ namespace BlImplementation
                 {
                     if (oD.ShipDate != null)
                         throw new BO.AlreadyDone("the order alredy shiped");
-                    DO.OrderItem item = Dal.OrderItem.GetOrderItemsOfOrder(ID).First(x => x?.ProductID == product) ?? throw new DalException("error in getting items in order", new Exception("error"));
+                    DO.OrderItem item = Dal.OrderItem.GetByF((DO.OrderItem? orderItem) => { return orderItem?.OrderID == ID && orderItem?.ProductID == product; });
                     item.Amount = amount;
                     try
                     {
@@ -183,11 +184,11 @@ namespace BlImplementation
                     catch (Exception ex) { throw new DalException("error in updating an order", ex); }
                     double price = 0;
                     List<BO.OrderItem> lItems = new List<BO.OrderItem>();
-                    foreach (DO.OrderItem orderItem in Dal.OrderItem.GetOrderItemsOfOrder(ID))
+                    foreach (DO.OrderItem? orderItem in Dal.OrderItem.GetAll((DO.OrderItem? orderItem) => orderItem?.OrderID == ID))
                     {
-                        DO.Product p = Dal.Product.Get(orderItem.ProductID);
-                        lItems.Add(new BO.OrderItem() { ID = orderItem.ID, ProductID = p.ID, ProductName = p.Name, ProductPrice = p.Price, Amount = orderItem.Amount, TotalPrice = p.Price * orderItem.Amount });
-                        price += orderItem.Price;
+                        DO.Product p = Dal.Product.Get((int)orderItem?.ProductID!);
+                        lItems.Add(new BO.OrderItem() { ID = (int)orderItem?.ID!, ProductID = p.ID, ProductName = p.Name, ProductPrice = p.Price, Amount = (int)orderItem?.Amount!, TotalPrice = p.Price * (int)orderItem?.Amount! });
+                        price += orderItem?.Price ?? 0;
                     }
                     BO.Order oB = new BO.Order() { ID = oD.ID, CustomerName = oD.CustomerName, CustomerAddress = oD.CustomerAddress, CustomerEmail = oD.CustomerEmail, Status = BO.Enums.OrderStatus.OrderConfirmed, OrderDate = oD.OrderDate, ShipDate = oD.ShipDate, DeliveryDate = oD.DeliveryDate, Items = lItems, TotalPrice = price };
                     return oB;

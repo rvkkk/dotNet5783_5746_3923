@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PL.Products"
         mc:Ignorable="d"
-        Title="ProductWindow" Height="640" Width="800">
+        Title="ProductWindow" Height="640" Width="800" Background="#FFEDD0F1">
     <Grid Name="MainGrid" Margin="100,84,100,84" RenderTransformOrigin="-0.121,0.848">
         <Grid Name="UpGrid" Height="auto" Grid.Row="0" Width="auto" Margin="100,0,100,100" Grid.ColumnSpan="2">
             <Grid.RowDefinitions>
@@ -20,17 +20,23 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions >
             <Label x:Name="ProductIDL" Content="ID:" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" FontSize="16"/>
-            <Label x:Name="ProductCategoryL" Content="Category:" HorizontalAlignment="Left" Grid.Row="1" VerticalAlignment="Top" FontSize="16" FontWeight="Bold" Margin="84,8,0,0"/>
-            <Label x:Name="ProductNameL" Content="Name:" HorizontalAlignment="Left" Grid.Row="2" VerticalAlignment="Center" FontWeight="Bold" FontSize="16" RenderTransformOrigin="1.264,0.609" Margin="84,0,0,0"/>
-            <Label x:Name="ProductPriceL" Content="Price:" HorizontalAlignment="Left" Grid.Row="3" VerticalAlignment="Top" FontSize="16" FontWeight="Bold" Margin="84,12,0,0"/>
+            <Label x:Name="ProductCategoryL" Content="Category:" HorizontalAlignment="Left" Grid.Row="1" VerticalAlignment="Top" FontSize="16" FontWeight="Bold" Margin="84,17,0,0"/>
+            <Label x:Name="ProductNameL" Content="Name:" HorizontalAlignment="Left" Grid.Row="2" VerticalAlignment="Top" FontWeight="Bold" FontSize="16" RenderTransformOrigin="1.264,0.609" Margin="84,17,0,0"/>
+            <Label x:Name="ProductPriceL" Content="Price:" HorizontalAlignment="Left" Grid.Row="3" VerticalAlignment="Top" FontSize="16" FontWeight="Bold" Margin="84,16,0,0"/>
             <Label x:Name="ProductInStockL" Content="In stock:" HorizontalAlignment="Left" Grid.Row="4" VerticalAlignment="Center" FontSize="16" FontWeight="Bold" Margin="84,0,0,0"/>
-            <TextBox Grid.Column="1" Grid.Row="0" HorizontalAlignment="Center" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Center" Width="150" Height="25"/>
-            <TextBox Grid.Column="1" Grid.Row="1" HorizontalAlignment="Center" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Center" Width="150" Height="25"/>
-            <TextBox Grid.Column="1" Grid.Row="2" HorizontalAlignment="Center" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Center" Width="150" Height="25"/>
-            <TextBox Grid.Column="1" Grid.Row="3" HorizontalAlignment="Center" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Center" Width="150" Height="25"/>
-            <TextBox Grid.Column="1" Grid.Row="4" HorizontalAlignment="Center" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Center" Width="150" Height="25"/>
+            <TextBox x:Name="tbProductID" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Center" TextWrapping="Wrap" Text="" VerticalAlignment="Center" Width="150" Height="25" FontSize="16" FontWeight="Bold" Background="#FFD4F5FA"/>
+            <ComboBox x:Name="ProductCategoriesSelector" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Center" Text="" VerticalAlignment="Center" Width="150" Height="25" FontSize="16" FontWeight="Bold">
+                <ComboBox.Background>
+                    <LinearGradientBrush EndPoint="0,1">
+                        <GradientStop Color="#FFF0F0F0"/>
+                        <GradientStop Color="#FFD4F5FA" Offset="1"/>
+                    </LinearGradientBrush>
+                </ComboBox.Background>
+            </ComboBox>
+            <TextBox x:Name="tbProductName" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Center" TextWrapping="Wrap" Text="" VerticalAlignment="Center" Width="150" Height="25" FontSize="16" FontWeight="Bold" Background="#FFD4F5FA"/>
+            <TextBox x:Name="tbProductPrice" Grid.Column="1" Grid.Row="3" HorizontalAlignment="Center" TextWrapping="Wrap" Text="" VerticalAlignment="Center" Width="150" Height="25" FontSize="16" FontWeight="Bold" Background="#FFD4F5F8"/>
+            <TextBox x:Name="tbProductInStock" Grid.Column="1" Grid.Row="4" HorizontalAlignment="Center" TextWrapping="Wrap" Text="" VerticalAlignment="Center" Width="150" Height="25" FontSize="16" FontWeight="Bold" Background="#FFD4F5FA"/>
         </Grid>
-        <Button x:Name="AddProductButton" Content="Add Product" Height="60" Width="120" Margin="0,370,0,0" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="1" Click="AddProductButton_Click"/>
-        <Button x:Name="UpdateProductButton" Content="Update Product" Height="60" Width="120" Margin="0,370,0,0" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="1" Click="UpdateProductButton_Click"/>
+        <Button x:Name="ProductButton" Content="Update Product" Height="60" Width="130" Margin="0,370,0,0" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="1" Click="ProductButton_Click" FontSize="16" FontWeight="Bold" Background="#FFD4F5FA"/>
     </Grid>
 </Window>

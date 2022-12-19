@@ -1,12 +1,15 @@
 ﻿using BlApi;
 using BO;
 using Dal;
+using DO;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace BlImplementation
 {
@@ -17,13 +20,14 @@ namespace BlImplementation
         /// returns all the exist products
         /// </summary>
         /// <returns>list of the products</returns>
-        /// 
         public IEnumerable<BO.ProductForList?> GetAll(Func<BO.Product?, bool>? func = null)
         {
             List<BO.ProductForList?> lproducts = new List<BO.ProductForList?>();
-            foreach (DO.Product product in Dal.Product.GetAll())//func
+            foreach (DO.Product? product in Dal.Product.GetAll())
             {
-                lproducts.Add(new BO.ProductForList() { ID = product.ID, Name = product.Name, Category = (BO.Enums.Category)Enum.Parse(typeof(DO.Enums.Category), product.Category.ToString()), Price = product.Price });
+                BO.Product p = Get((int)product?.ID!);
+                if (func == null || func(p))
+                    lproducts.Add(new BO.ProductForList() { ID = (int)product?.ID!, Name = product?.Name, Category = (BO.Enums.Category)Enum.Parse(typeof(DO.Enums.Category), product?.Category.ToString()!), Price = (double)product?.Price! });
             }
             return lproducts;
         }
@@ -41,10 +45,10 @@ namespace BlImplementation
             try
             {
                 DO.Product pD = Dal.Product.Get(ID);
-                BO.Product pB = new BO.Product() { ID = pD.ID, Name = pD.Name, Category = (BO.Enums.Category)Enum.Parse(typeof(DO.Enums.Category), pD.Category.ToString()), Price = pD.Price, InStock = pD.InStock };
+                BO.Product pB = new BO.Product() { ID = pD.ID, Name = pD.Name, Category = (BO.Enums.Category)Enum.Parse(typeof(DO.Enums.Category), pD.Category.ToString()!), Price = pD.Price, InStock = pD.InStock };
                 return pB;
             }
-            catch(Exception ex) { throw new DalException("error in getting a product", ex); }
+            catch (Exception ex) { throw new DalException("error in getting a product", ex); }
         }
         /// <summary>
         /// returns product in cart
@@ -61,7 +65,7 @@ namespace BlImplementation
             try
             {
                 DO.Product pD = Dal.Product.Get(ID);
-                BO.ProductItem pIB = new BO.ProductItem() { ID = pD.ID, Name = pD.Name, Category = (BO.Enums.Category)Enum.Parse(typeof(DO.Enums.Category), pD.Category.ToString()), Price = pD.Price, Amount = cart.Items.First(x => x.ID == ID).Amount, InStock = pD.InStock != 0 };
+                BO.ProductItem pIB = new BO.ProductItem() { ID = pD.ID, Name = pD.Name, Category = (BO.Enums.Category)Enum.Parse(typeof(DO.Enums.Category), pD.Category.ToString()!), Price = pD.Price, Amount = cart.Items.First(x => x!.ID == ID)!.Amount, InStock = pD.InStock != 0 };
                 return pIB;
             }
             catch (Exception ex) { throw new DalException("error in getting a product in cart", ex); }
@@ -75,7 +79,7 @@ namespace BlImplementation
         /// <exception cref="DalException">exception from dal</exception>
         public void Add(BO.Product p)
         {
-            if (p.ID <= 0) 
+            if (p.ID <= 0)
                 throw new BO.InvalidID("there in no such an id");
             if (p.Name == "")
                 throw new BO.InvalidInput("the name is empty");
@@ -85,7 +89,7 @@ namespace BlImplementation
                 throw new BO.InvalidInput("the amount in stock is less than 0");
             try
             {
-                DO.Product pD = new DO.Product() { ID = p.ID, Name = p.Name, Category = (DO.Enums.Category)Enum.Parse(typeof(BO.Enums.Category), p.Category.ToString()), Price = p.Price, InStock = p.InStock };
+                DO.Product pD = new DO.Product() { ID = p.ID, Name = p.Name, Category = (DO.Enums.Category)Enum.Parse(typeof(BO.Enums.Category), p.Category.ToString()!), Price = p.Price, InStock = p.InStock };
                 Dal.Product.Add(pD);
             }
             catch (Exception ex) { throw new DalException("error in adding a product", ex); }
@@ -99,15 +103,15 @@ namespace BlImplementation
         {
             try
             {
-                foreach (DO.Order order in Dal.Order.GetAll())
+                foreach (DO.Order? order in Dal.Order.GetAll())
                 {
-                    foreach (DO.OrderItem item in Dal.OrderItem.GetOrderItemsOfOrder(order.ID))
+                    foreach (DO.OrderItem? item in Dal.OrderItem.GetAll((DO.OrderItem? orderItem) => orderItem?.OrderID == order?.ID))
                     {
-                        if (item.ID == ID)
+                        if (item?.ID == ID)
                             throw new BO.AlreadyExists("the product is in alredy in order");
                     }
                 }
-                Dal.Product.Delete(ID); 
+                Dal.Product.Delete(ID);
             }
             catch (Exception ex) { throw new DalException("error in deleting a product", ex); }
         }
@@ -127,7 +131,7 @@ namespace BlImplementation
                 throw new BO.InvalidInput("the amount in stock is less than 0");
             try
             {
-                DO.Product pD = new DO.Product() { ID = p.ID, Name = p.Name, Category = (DO.Enums.Category)Enum.Parse(typeof(BO.Enums.Category), p.Category.ToString()), Price = p.Price, InStock = p.InStock };
+                DO.Product pD = new DO.Product() { ID = p.ID, Name = p.Name, Category = (DO.Enums.Category)Enum.Parse(typeof(BO.Enums.Category), p.Category.ToString()!), Price = p.Price, InStock = p.InStock };
                 Dal.Product.Update(pD);
             }
             catch (Exception ex) { throw new DalException("error in updating a product", ex); }

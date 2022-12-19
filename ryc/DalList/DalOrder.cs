@@ -77,7 +77,7 @@ internal class DalOrder : IOrder
     {
         for (int i = 0; i < DataSource.lOrder.Count; i++)
         {
-            if (func(DataSource.lOrder[i]))
+            if (func!(DataSource.lOrder[i]))
                 return (Order)DataSource.lOrder[i]!;
         }
         throw new InvalidID("there in no such an order");

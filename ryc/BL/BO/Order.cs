@@ -45,7 +45,7 @@ namespace BO
         /// <summary>
         /// list of items in order
         /// </summary>
-        public List<OrderItem> Items { get; set; }
+        public List<OrderItem?>? Items { get; set; }
         /// <summary>
         /// price of order
         /// </summary>
@@ -66,9 +66,9 @@ delivery date: {DeliveryDate}
 total price: {TotalPrice}
 items: 
 ";
-            foreach(var item in Items)
+            foreach(var item in Items!)
             {
-                s+=item.ToString(); 
+                s+=item?.ToString(); 
             }
             return s;
         }

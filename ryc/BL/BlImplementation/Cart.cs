@@ -21,9 +21,9 @@ namespace BlImplementation
         /// <exception cref="DalException">exception from dal</exception>
         public BO.Cart AddToCart(BO.Cart cart, int ID)
         {
-            foreach (BO.OrderItem item in cart.Items)
+            foreach (BO.OrderItem? item in cart.Items!)
             {
-                if (item.ProductID == ID)
+                if (item?.ProductID == ID)
                     throw new BO.AlreadyExists("the product already exists");
             }
             try
@@ -47,24 +47,24 @@ namespace BlImplementation
         /// <exception cref="DalException">exception from dal</exception>
         public BO.Cart UpdateCart(BO.Cart cart, int ID, int amount)
         {
-            BO.OrderItem item = cart.Items.FirstOrDefault(x => x.ProductID == ID);
+            BO.OrderItem? item = cart.Items?.FirstOrDefault(x => x!.ProductID == ID);
             if (item == null)
                 throw new InvalidID("there is no such an id in the cart");
             try
             {
                 if (amount == 0)
                 {
-                    cart.TotalPrice -= cart.Items.FirstOrDefault(x => x.ProductID == ID).TotalPrice;
+                    cart.TotalPrice -= (double)cart.Items?.FirstOrDefault(x => x!.ProductID == ID)!.TotalPrice!;
                     cart.Items.Remove(item);
                 }
                 else
                 {
-                    cart.Items.Remove(item);
+                    cart.Items?.Remove(item);
                     DO.Product product = Dal.Product.Get(ID);
                     item.Amount = amount;
                     item.TotalPrice = amount * item.ProductPrice;
                     cart.TotalPrice += product.Price * amount;
-                    cart.Items.Add(item);
+                    cart.Items?.Add(item);
                 }
                 return cart;
             }
@@ -84,7 +84,7 @@ namespace BlImplementation
                 throw new BO.InvalidInput("the customer email is empty");
             if (cart.CustomerAddress == "")
                 throw new BO.InvalidInput("the customer address is empty");
-            foreach (BO.OrderItem orderItem in cart.Items)
+            foreach (BO.OrderItem? orderItem in cart.Items!)
             {
                 try
                 {
@@ -100,11 +100,11 @@ namespace BlImplementation
             try
             {
                 int ID = Dal.Order.Add(order);
-                foreach (BO.OrderItem orderItem in cart.Items)
+                foreach (BO.OrderItem? orderItem in cart.Items)
                 {
                     try
                     {
-                        Dal.OrderItem.Add(new DO.OrderItem() { OrderID = ID, ProductID = orderItem.ProductID, Amount = orderItem.Amount, Price = orderItem.ProductPrice });
+                        Dal.OrderItem.Add(new DO.OrderItem() { OrderID = ID, ProductID = (int)orderItem?.ProductID!, Amount = orderItem.Amount, Price = orderItem.ProductPrice });
                     }
                     catch (Exception ex) { throw new DalException("error in adding a product to order", ex); }
                     try

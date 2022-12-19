@@ -24,7 +24,7 @@ namespace BO
         /// <summary>
         /// list of items
         /// </summary>
-        public List<OrderItem?> Items { get; set; }
+        public List<OrderItem?>? Items { get; set; }
         /// <summary>
         /// the price of the cart
         /// </summary>
@@ -41,9 +41,9 @@ customer: name={CustomerName} email={CustomerEmail} address={CustomerAddress}
 total price: {TotalPrice}
 items: 
 ";
-            foreach(var item in Items)
+            foreach(var item in Items!)
             {
-                s+= item.ToString();
+                s+= item?.ToString();
             }
             return s;   
         }

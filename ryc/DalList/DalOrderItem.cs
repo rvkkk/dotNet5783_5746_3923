@@ -79,7 +79,7 @@ internal class DalOrderItem : IOrderItem
     {
         for (int i = 0; i < DataSource.lOrderItem.Count; i++)
         {
-            if (func(DataSource.lOrderItem[i]))
+            if (func!(DataSource.lOrderItem[i]))
                 return (OrderItem)DataSource.lOrderItem[i]!;
         }
         throw new InvalidID("there in no such an order item");
@@ -99,36 +99,5 @@ internal class DalOrderItem : IOrderItem
                 lorderItems.Add(DataSource.lOrderItem[i]);
         }
         return lorderItems;
-    }
-    /// <summary>
-    /// returns orderItem by orderId and productId
-    /// </summary>
-    /// <param name="IDO">recived order id</param>
-    /// <param name="IDP">recived product id</param>
-    /// <returns>orderItem</returns>
-    /// <exception cref="Exception">there in no such an order item</exception>
-    //public OrderItem GetOrderItem(int IDO, int IDP)
-    //{
-    //    for (int i = 0; i < DataSource.lOrderItem.Count; i++)
-    //    {
-    //        if (DataSource.lOrderItem[i]?.OrderID == IDO && DataSource.lOrderItem[i]?.ProductID == IDP)
-    //            return (OrderItem)DataSource.lOrderItem[i]!;
-    //    }
-    //    throw new InvalidID("there in no such an order item");
-    //}
-    /// <summary>
-    /// returns orderItems that belongs to orderId
-    /// </summary>
-    /// <param name="IDO">recived order id</param>
-    /// <returns>an array of orderItems</returns>
-    //public IEnumerable<OrderItem?> GetOrderItemsOfOrder(int IDO)
-    //{
-    //    List<OrderItem?> lorderItems = new List<OrderItem?>();
-    //    for (int i = 0; i < DataSource.lOrderItem.Count; i++)
-    //    {
-    //        if (DataSource.lOrderItem[i]?.OrderID == IDO)
-    //            lorderItems.Add(DataSource.lOrderItem[i]);
-    //    }
-    //    return lorderItems;
-    //}  
+    } 
 }

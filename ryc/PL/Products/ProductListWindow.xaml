@@ -22,7 +22,7 @@ VerticalAlignment="Stretch" Width="auto">
             <Label x:Name="ProductCategoryLabel" Content="Category:" Grid.Column="0" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.521,0.618" FontSize="24" FontWeight="Bold"/>
             <ComboBox x:Name="ProductCategoriesSelector" HorizontalAlignment= "Stretch" VerticalAlignment="Stretch" Grid.Column="1" FontSize="20" FontWeight="Bold" SelectionChanged="ProductCategoriesSelector_SelectionChanged"/>
         </Grid>
-        <ListView x:Name="ProductsListView" Grid.Row="1" d:ItemsSource="{d:SampleData ItemCount=5}" FontSize="16">
+        <ListView x:Name="ProductsListView" Grid.Row="1" d:ItemsSource="{d:SampleData ItemCount=5}" FontSize="16" Background="#FFE9C0F1" MouseDoubleClick="ProductsListView_MouseDoubleClick">
             <ListView.View>
                 <GridView>
                     <GridViewColumn/>

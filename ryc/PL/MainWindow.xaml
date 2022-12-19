@@ -6,9 +6,7 @@
         xmlns:local="clr-namespace:PL"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        <Button x:Name="OpenProductList" Content="view products list" HorizontalAlignment="Center" Margin="0,167,0,0" VerticalAlignment="Top" Height="96" Width="215" FontSize="18" FontWeight="Bold" Click="ShowProductsButton_click"/>
-        <Button x:Name="OpenOrdersList" Content="view orders list" HorizontalAlignment="Left" Margin="483,42,0,0" VerticalAlignment="Top" Height="96" Width="215" FontSize="18" FontWeight="Bold" Click="ShowOrdersButton_click"/>
-        <Button x:Name="OpenCartsList" Content="view carts list" HorizontalAlignment="Left" Margin="55,42,0,0" VerticalAlignment="Top" Height="96" Width="215" FontSize="18" FontWeight="Bold" Click="ShowCartsButton_click"/>
+    <Grid Background="#FFA8F0F0">
+        <Button x:Name="OpenProductList" Content="view products list" HorizontalAlignment="Center" VerticalAlignment="Center" Height="96" Width="215" FontSize="18" FontWeight="Bold" Click="ShowProductsButton_click" Background="#FFCD88F0"/>
     </Grid>
 </Window>
