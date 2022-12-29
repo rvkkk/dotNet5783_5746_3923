@@ -31,6 +31,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlTest", "BlTest\BlTest.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PL", "PL\PL.csproj", "{3190E862-A122-4AD7-9FCB-33183329409F}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "xml", "xml", "{C6898E1B-B82E-42D7-8AF5-535EE87BE7D1}"
+	ProjectSection(SolutionItems) = preProject
+		xml\dal-config.xml = xml\dal-config.xml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

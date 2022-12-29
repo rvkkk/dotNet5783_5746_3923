@@ -15,7 +15,8 @@ namespace BlImplementation
 {
     internal class Product : IProduct
     {
-        private DalApi.IDal Dal = new DalList();
+        DalApi.IDal? dal = DalApi.Factory.Get();
+
         /// <summary>
         /// returns all the exist products
         /// </summary>
@@ -23,13 +24,17 @@ namespace BlImplementation
         public IEnumerable<BO.ProductForList?> GetAll(Func<BO.Product?, bool>? func = null)
         {
             List<BO.ProductForList?> lproducts = new List<BO.ProductForList?>();
-            foreach (DO.Product? product in Dal.Product.GetAll())
+            try
             {
-                BO.Product p = Get((int)product?.ID!);
-                if (func == null || func(p))
-                    lproducts.Add(new BO.ProductForList() { ID = (int)product?.ID!, Name = product?.Name, Category = (BO.Enums.Category)Enum.Parse(typeof(DO.Enums.Category), product?.Category.ToString()!), Price = (double)product?.Price! });
+                foreach (DO.Product? product in dal?.Product.GetAll()!)
+                {
+                    BO.Product p = Get((int)product?.ID!);
+                    if (func == null || func(p))
+                        lproducts.Add(new BO.ProductForList() { ID = (int)product?.ID!, Name = product?.Name, Category = (BO.Enums.Category)Enum.Parse(typeof(DO.Enums.Category), product?.Category.ToString()!), Price = (double)product?.Price! });
+                }
+                return lproducts;
             }
-            return lproducts;
+            catch (DO.InvalidID ex) { throw new DalException("error in getting a product", ex); }
         }
         /// <summary>
         /// returns product
@@ -44,7 +49,7 @@ namespace BlImplementation
                 throw new BO.InvalidID("there in no such an id");
             try
             {
-                DO.Product pD = Dal.Product.Get(ID);
+                DO.Product pD = (DO.Product)dal?.Product.Get(ID)!;
                 BO.Product pB = new BO.Product() { ID = pD.ID, Name = pD.Name, Category = (BO.Enums.Category)Enum.Parse(typeof(DO.Enums.Category), pD.Category.ToString()!), Price = pD.Price, InStock = pD.InStock };
                 return pB;
             }
@@ -64,11 +69,11 @@ namespace BlImplementation
                 throw new BO.InvalidID("there in no such an id");
             try
             {
-                DO.Product pD = Dal.Product.Get(ID);
-                BO.ProductItem pIB = new BO.ProductItem() { ID = pD.ID, Name = pD.Name, Category = (BO.Enums.Category)Enum.Parse(typeof(DO.Enums.Category), pD.Category.ToString()!), Price = pD.Price, Amount = cart.Items.First(x => x!.ID == ID)!.Amount, InStock = pD.InStock != 0 };
+                DO.Product pD = (DO.Product)dal?.Product.Get(ID)!;
+                BO.ProductItem pIB = new BO.ProductItem() { ID = pD.ID, Name = pD.Name, Category = (BO.Enums.Category)Enum.Parse(typeof(DO.Enums.Category), pD.Category.ToString()!), Price = pD.Price, Amount = (int)cart?.Items?.First(x => x!.ID == ID)!.Amount!, InStock = pD.InStock != 0 };
                 return pIB;
             }
-            catch (Exception ex) { throw new DalException("error in getting a product in cart", ex); }
+            catch (DO.InvalidID ex) { throw new DalException("error in getting a product in cart", ex); }
         }
         /// <summary>
         /// adds product
@@ -90,7 +95,7 @@ namespace BlImplementation
             try
             {
                 DO.Product pD = new DO.Product() { ID = p.ID, Name = p.Name, Category = (DO.Enums.Category)Enum.Parse(typeof(BO.Enums.Category), p.Category.ToString()!), Price = p.Price, InStock = p.InStock };
-                Dal.Product.Add(pD);
+                dal?.Product.Add(pD);
             }
             catch (Exception ex) { throw new DalException("error in adding a product", ex); }
         }
@@ -103,17 +108,17 @@ namespace BlImplementation
         {
             try
             {
-                foreach (DO.Order? order in Dal.Order.GetAll())
+                foreach (DO.Order? order in dal?.Order.GetAll()!)
                 {
-                    foreach (DO.OrderItem? item in Dal.OrderItem.GetAll((DO.OrderItem? orderItem) => orderItem?.OrderID == order?.ID))
+                    foreach (DO.OrderItem? item in dal.OrderItem.GetAll((DO.OrderItem? orderItem) => orderItem?.OrderID == order?.ID))
                     {
                         if (item?.ID == ID)
                             throw new BO.AlreadyExists("the product is in alredy in order");
                     }
                 }
-                Dal.Product.Delete(ID);
+                dal?.Product.Delete(ID);
             }
-            catch (Exception ex) { throw new DalException("error in deleting a product", ex); }
+            catch (DO.InvalidID ex) { throw new DalException("error in deleting a product", ex); }
         }
         /// <summary>
         /// updates product
@@ -132,7 +137,7 @@ namespace BlImplementation
             try
             {
                 DO.Product pD = new DO.Product() { ID = p.ID, Name = p.Name, Category = (DO.Enums.Category)Enum.Parse(typeof(BO.Enums.Category), p.Category.ToString()!), Price = p.Price, InStock = p.InStock };
-                Dal.Product.Update(pD);
+                dal?.Product.Update(pD);
             }
             catch (Exception ex) { throw new DalException("error in updating a product", ex); }
         }

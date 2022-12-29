@@ -19,6 +19,8 @@ namespace PL.Carts
     /// </summary>
     public partial class CartWindow : Window
     {
+        BlApi.IBL? bl = BlApi.Factory.Get();
+
         public CartWindow()
         {
             InitializeComponent();

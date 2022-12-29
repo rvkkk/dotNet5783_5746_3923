@@ -21,7 +21,7 @@ namespace PL.Products
     /// </summary>
     public partial class ProductWindow : Window
     {
-        private IBL bl = new Bl();
+        BlApi.IBL? bl = BlApi.Factory.Get();
         public ProductWindow()
         {
             InitializeComponent();
@@ -50,10 +50,10 @@ namespace PL.Products
                 try
                 {
                     BO.Product p = new BO.Product() { ID = int.Parse(tbProductID.Text), Name = tbProductName.Text, Category = (BO.Enums.Category)ProductCategoriesSelector.SelectedItem, Price = double.Parse(tbProductPrice.Text), InStock = int.Parse(tbProductInStock.Text) };
-                    if(ProductButton.Content.ToString() == "Update Product")
-                      bl.Product.Update(p);
+                    if (ProductButton.Content.ToString() == "Update Product")
+                        bl?.Product.Update(p);
                     else
-                        bl.Product.Add(p);
+                        bl?.Product.Add(p);
                     Close();
                 }
                 catch { MessageBox.Show("one of the details was worng"); }

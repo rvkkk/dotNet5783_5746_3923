@@ -13,7 +13,7 @@ namespace BlTest
 {
     internal class Program
     {
-        private static IBL bl = new Bl();
+        private static BlApi.IBL? bl = BlApi.Factory.Get();
 
         /// <summary>
         /// calls the products functions
@@ -46,26 +46,26 @@ namespace BlTest
                         p.Category = (BO.Enums.Category)int.Parse(Console.ReadLine() ?? throw new Exception("category was empty"));
                         Console.WriteLine("enter product in stock:");
                         p.InStock = int.Parse(Console.ReadLine() ?? throw new Exception("number in stock was empty"));
-                        bl.Product.Add(p);
+                        bl!.Product.Add(p);
                         break;
                     }
                 case 1:
                     {
                         Console.WriteLine("enter product ID:");
                         int.TryParse(Console.ReadLine(), out ID);
-                        Console.WriteLine(bl.Product.Get(ID));
+                        Console.WriteLine(bl!.Product.Get(ID));
                         break;
                     }
                 case 2:
                     {
                         Console.WriteLine("enter product ID:");
                         int.TryParse(Console.ReadLine(), out ID);
-                        Console.WriteLine(bl.Product.Get(ID, c));
+                        Console.WriteLine(bl!.Product.Get(ID, c));
                     }
                     break;
                 case 3:
                     {
-                        foreach (ProductForList? item in bl.Product.GetAll())
+                        foreach (ProductForList? item in bl!.Product.GetAll())
                             Console.WriteLine(item);
                         break;
                     }
@@ -73,7 +73,7 @@ namespace BlTest
                     {
                         Console.WriteLine("enter product ID:");
                         int.TryParse(Console.ReadLine(), out ID);
-                        Console.WriteLine(bl.Product.Get(ID));
+                        Console.WriteLine(bl!.Product.Get(ID));
                         Product p = new Product();
                         p.ID = ID;
                         Console.WriteLine("enter product new name:");
@@ -91,7 +91,7 @@ namespace BlTest
                     {
                         Console.WriteLine("enter product ID:");
                         int.TryParse(Console.ReadLine(), out ID);
-                        bl.Product.Delete(ID);
+                        bl!.Product.Delete(ID);
                         break;
                     }
                 default:
@@ -120,12 +120,12 @@ namespace BlTest
                     {
                         Console.WriteLine("enter order ID:");
                         int.TryParse(Console.ReadLine(), out ID);
-                        Console.WriteLine(bl.Order.Get(ID));
+                        Console.WriteLine(bl!.Order.Get(ID));
                         break;
                     }
                 case 1:
                     {
-                        foreach (OrderForList? item in bl.Order.GetAll())
+                        foreach (OrderForList? item in bl!.Order.GetAll())
                             Console.WriteLine(item);
                         break;
                     }
@@ -133,14 +133,14 @@ namespace BlTest
                     {
                         Console.WriteLine("enter order ID:");
                         int.TryParse(Console.ReadLine(), out ID);
-                        Console.WriteLine(bl.Order.ShipUpdate(ID));
+                        Console.WriteLine(bl!.Order.ShipUpdate(ID));
                         break;
                     }
                 case 3:
                     {
                         Console.WriteLine("enter order ID:");
                         int.TryParse(Console.ReadLine(), out ID);
-                        Console.WriteLine(bl.Order.DeliveryUpdate(ID));
+                        Console.WriteLine(bl!.Order.DeliveryUpdate(ID));
                         break;
                     }
                 case 4:
@@ -152,14 +152,14 @@ namespace BlTest
                         int.TryParse(Console.ReadLine(), out pID);
                         Console.WriteLine("enter product amonut:");
                         int.TryParse(Console.ReadLine(), out amount);
-                        Console.WriteLine(bl.Order.ManagerUpdate(ID, pID, amount));
+                        Console.WriteLine(bl!.Order.ManagerUpdate(ID, pID, amount));
                         break;
                     }
                 case 5:
                     {
                         Console.WriteLine("enter order ID:");
                         int.TryParse(Console.ReadLine(), out ID);
-                        Console.WriteLine(bl.Order.OrderTracking(ID));
+                        Console.WriteLine(bl!.Order.OrderTracking(ID));
                         break;
                     }
                 default:
@@ -185,7 +185,7 @@ namespace BlTest
                     {
                         Console.WriteLine("enter product ID:");
                         int.TryParse(Console.ReadLine(), out ID);
-                        Console.WriteLine(bl.Cart.AddToCart(c, ID));
+                        Console.WriteLine(bl!.Cart.AddToCart(c, ID));
                         break;
                     }
                 case 1:
@@ -195,12 +195,12 @@ namespace BlTest
                         int.TryParse(Console.ReadLine(), out ID);
                         Console.WriteLine("enter product amount:");
                         int.TryParse(Console.ReadLine(), out amount);
-                        bl.Cart.UpdateCart(c, ID, amount);
+                        bl!.Cart.UpdateCart(c, ID, amount);
                         break;
                     }
                 case 2:
                     {
-                        bl.Cart.MakeAnOrder(c);
+                        bl!.Cart.MakeAnOrder(c);
                         break;
                     }
                 default:

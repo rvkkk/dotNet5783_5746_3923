@@ -21,11 +21,11 @@ namespace PL.Orders
     /// </summary>
     public partial class OrdersListWindow : Window
     {
-        private IBL bl = new Bl();
+        BlApi.IBL? bl = BlApi.Factory.Get();
         public OrdersListWindow()
         {
             InitializeComponent();
-            OrdersListView.ItemsSource = bl.Order.GetAll();
+            OrdersListView.ItemsSource = bl?.Order.GetAll();
         }
     }
 }

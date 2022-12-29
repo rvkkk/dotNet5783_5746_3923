@@ -1,7 +1,6 @@
 ﻿using BlApi;
 using BO;
 using Dal;
-using DO;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -15,7 +14,8 @@ namespace BlImplementation
 {
     internal class Order : IOrder
     {
-        private DalApi.IDal Dal = new DalList();
+        DalApi.IDal? dal = DalApi.Factory.Get();
+
         /// <summary>
         /// returns all the exist orders
         /// </summary>
@@ -24,13 +24,13 @@ namespace BlImplementation
         public IEnumerable<OrderForList?> GetAll()
         {
             List<BO.OrderForList?> lOrders = new List<BO.OrderForList?>();
-            foreach (DO.Order? order in Dal.Order.GetAll())
+            foreach (DO.Order? order in dal?.Order.GetAll()!)
             {
                 int amount = 0;
                 double price = 0;
                 try
                 {
-                    foreach (DO.OrderItem? orderItem in Dal.OrderItem.GetAll((DO.OrderItem? orderItem) => orderItem?.OrderID == order?.ID))
+                    foreach (DO.OrderItem? orderItem in dal?.OrderItem.GetAll((DO.OrderItem? orderItem) => orderItem?.OrderID == order?.ID)!)
                     {
                         amount++;
                         price += orderItem?.Price * orderItem?.Amount ?? 0;
@@ -42,7 +42,7 @@ namespace BlImplementation
                         oStatus = BO.Enums.OrderStatus.Shipped;
                     lOrders.Add(new BO.OrderForList() { ID = (int)order?.ID!, CustomerName = order?.CustomerName, Status = oStatus, AmountOfItems = amount, TotalPrice = price });
                 }
-                catch (Exception ex) { throw new DalException("error in getting items in order", ex); }
+                catch (DO.InvalidID ex) { throw new DalException("error in getting items in order", ex); }
             }
             return lOrders;
         }
@@ -57,34 +57,35 @@ namespace BlImplementation
         {
             if (ID <= 0)
                 throw new BO.InvalidID("there in no such an id");
+            DO.Order oD;
             try
             {
-                DO.Order oD = Dal.Order.Get(ID);
-                double price = 0;
-                List<BO.OrderItem> lItems = new List<BO.OrderItem>();
-                try
-                {
-                    foreach (DO.OrderItem? orderItem in Dal.OrderItem.GetAll((DO.OrderItem? orderItem) => orderItem?.OrderID == ID))
-                    {
-                        try
-                        {
-                            DO.Product p = Dal.Product.Get((int)orderItem?.ProductID!);
-                            lItems.Add(new BO.OrderItem() { ID = (int)orderItem?.ID!, ProductID = p.ID, ProductName = p.Name, ProductPrice = p.Price, Amount = (int)orderItem?.Amount!, TotalPrice = p.Price * (int)orderItem?.Amount! });
-                        }
-                        catch (Exception ex) { throw new DalException("error in getting a product", ex); }
-                        price += orderItem?.Price ?? 0;
-                    }
-                    BO.Enums.OrderStatus oStatus = BO.Enums.OrderStatus.OrderConfirmed;
-                    if (oD.DeliveryDate != DateTime.MinValue)
-                        oStatus = BO.Enums.OrderStatus.DeliveredToCustomer;
-                    else if (oD.ShipDate != DateTime.MinValue)
-                        oStatus = BO.Enums.OrderStatus.Shipped;
-                    BO.Order oB = new BO.Order() { ID = oD.ID, CustomerName = oD.CustomerName, CustomerAddress = oD.CustomerAddress, CustomerEmail = oD.CustomerEmail, Status = oStatus, OrderDate = oD.OrderDate, ShipDate = oD.ShipDate, DeliveryDate = oD.DeliveryDate, Items = lItems, TotalPrice = price };
-                    return oB;
-                }
-                catch (Exception ex) { throw new DalException("error in getting items in order", ex); }
+                oD = (DO.Order)dal?.Order.Get(ID)!;
             }
-            catch (Exception ex) { throw new DalException("error in getting an order", ex); }
+            catch (DO.InvalidID ex) { throw new DalException("error in getting an order", ex); }
+            double price = 0;
+            List<BO.OrderItem> lItems = new List<BO.OrderItem>();
+            try
+            {
+                foreach (DO.OrderItem? orderItem in dal?.OrderItem.GetAll((DO.OrderItem? orderItem) => orderItem?.OrderID == ID)!)
+                {
+                    try
+                    {
+                        DO.Product p = (DO.Product)dal?.Product.Get((int)orderItem?.ProductID!)!;
+                        lItems.Add(new BO.OrderItem() { ID = (int)orderItem?.ID!, ProductID = p.ID, ProductName = p.Name, ProductPrice = p.Price, Amount = (int)orderItem?.Amount!, TotalPrice = p.Price * (int)orderItem?.Amount! });
+                    }
+                    catch (DO.InvalidID ex) { throw new DalException("error in getting a product", ex); }
+                    price += orderItem?.Price ?? 0;
+                }
+                BO.Enums.OrderStatus oStatus = BO.Enums.OrderStatus.OrderConfirmed;
+                if (oD.DeliveryDate != DateTime.MinValue)
+                    oStatus = BO.Enums.OrderStatus.DeliveredToCustomer;
+                else if (oD.ShipDate != DateTime.MinValue)
+                    oStatus = BO.Enums.OrderStatus.Shipped;
+                BO.Order oB = new BO.Order() { ID = oD.ID, CustomerName = oD.CustomerName, CustomerAddress = oD.CustomerAddress, CustomerEmail = oD.CustomerEmail, Status = oStatus, OrderDate = oD.OrderDate, ShipDate = oD.ShipDate, DeliveryDate = oD.DeliveryDate, Items = lItems!, TotalPrice = price };
+                return oB;
+            }
+            catch (DO.InvalidID ex) { throw new DalException("error in getting items in order", ex); }
         }
         /// <summary>
         /// updates the ship date
@@ -94,33 +95,38 @@ namespace BlImplementation
         /// <exception cref="DalException">exception from dal</exception>
         public BO.Order ShipUpdate(int ID)
         {
+            DO.Order oD;
             try
             {
-                DO.Order oD = Dal.Order.Get(ID);
-                if (oD.ShipDate != null)
-                    throw new BO.AlreadyDone("the order alredy shiped");
-                oD.ShipDate = DateTime.Now;
-                try
-                {
-                    Dal.Order.Update(oD);
-                }
-                catch (Exception ex) { throw new DalException("error in updating an order", ex); }
-                double price = 0;
-                List<BO.OrderItem> lItems = new List<BO.OrderItem>();
-                foreach (DO.OrderItem? orderItem in Dal.OrderItem.GetAll((DO.OrderItem? orderItem) => orderItem?.OrderID == ID))
+                oD = (DO.Order)dal?.Order.Get(ID)!;
+            }
+            catch (DO.InvalidID ex) { throw new DalException("error in getting items in order", ex); }
+            if (oD.ShipDate != null)
+                throw new BO.AlreadyDone("the order alredy shiped");
+            oD.ShipDate = DateTime.Now;
+            try
+            {
+                dal?.Order.Update(oD);
+            }
+            catch (Exception ex) { throw new DalException("error in updating an order", ex); }
+            double price = 0;
+            List<BO.OrderItem> lItems = new List<BO.OrderItem>();
+            try
+            {
+                foreach (DO.OrderItem? orderItem in dal?.OrderItem.GetAll((DO.OrderItem? orderItem) => orderItem?.OrderID == ID)!)
                 {
                     try
                     {
-                        DO.Product p = Dal.Product.Get((int)orderItem?.ProductID!);
+                        DO.Product p = dal.Product.Get((int)orderItem?.ProductID!);
                         lItems.Add(new BO.OrderItem() { ID = (int)orderItem?.ID!, ProductID = p.ID, ProductName = p.Name, ProductPrice = p.Price, Amount = (int)orderItem?.Amount!, TotalPrice = p.Price * (int)orderItem?.Amount! });
                         price += orderItem?.Price ?? 0;
                     }
-                    catch (Exception ex) { throw new DalException("error in getting a product", ex); }
+                    catch (DO.InvalidID ex) { throw new DalException("error in getting a product", ex); }
                 }
-                BO.Order oB = new BO.Order() { ID = oD.ID, CustomerName = oD.CustomerName, CustomerAddress = oD.CustomerAddress, CustomerEmail = oD.CustomerEmail, Status = BO.Enums.OrderStatus.Shipped, OrderDate = oD.OrderDate, ShipDate = DateTime.Now, DeliveryDate = oD.DeliveryDate, Items = lItems, TotalPrice = price };
+                BO.Order oB = new BO.Order() { ID = oD.ID, CustomerName = oD.CustomerName, CustomerAddress = oD.CustomerAddress, CustomerEmail = oD.CustomerEmail, Status = BO.Enums.OrderStatus.Shipped, OrderDate = oD.OrderDate, ShipDate = DateTime.Now, DeliveryDate = oD.DeliveryDate, Items = lItems!, TotalPrice = price };
                 return oB;
             }
-            catch (Exception ex) { throw new DalException("error in getting items in order", ex); }
+            catch (DO.InvalidID ex) { throw new DalException("error in getting items in order", ex); }
         }
         /// <summary>
         /// updates the delivery date
@@ -130,33 +136,38 @@ namespace BlImplementation
         /// <exception cref="DalException">exception from dal</exception>
         public BO.Order DeliveryUpdate(int ID)
         {
+            DO.Order oD;
             try
             {
-                DO.Order oD = Dal.Order.Get(ID);
-                if (oD.ShipDate == null || oD.DeliveryDate != null)
-                    throw new BO.AlreadyDone("the order alredy delivered");
-                oD.DeliveryDate = DateTime.Now;
-                try
-                {
-                    Dal.Order.Update(oD);
-                }
-                catch (Exception ex) { throw new DalException("error in updating an order", ex); }
-                double price = 0;
-                List<BO.OrderItem> lItems = new List<BO.OrderItem>();
-                foreach (DO.OrderItem? orderItem in Dal.OrderItem.GetAll((DO.OrderItem? orderItem) => orderItem?.OrderID == ID))
+                oD = (DO.Order)dal?.Order.Get(ID)!;
+            }
+            catch (DO.InvalidID ex) { throw new DalException("error in updating an order", ex); }
+            if (oD.ShipDate == null || oD.DeliveryDate != null)
+                throw new BO.AlreadyDone("the order alredy delivered");
+            oD.DeliveryDate = DateTime.Now;
+            try
+            {
+                dal.Order.Update(oD);
+            }
+            catch (Exception ex) { throw new DalException("error in updating an order", ex); }
+            double price = 0;
+            List<BO.OrderItem> lItems = new List<BO.OrderItem>();
+            try
+            {
+                foreach (DO.OrderItem? orderItem in dal.OrderItem.GetAll((DO.OrderItem? orderItem) => orderItem?.OrderID == ID))
                 {
                     try
                     {
-                        DO.Product p = Dal.Product.Get((int)orderItem?.ProductID!);
+                        DO.Product p = dal.Product.Get((int)orderItem?.ProductID!);
                         lItems.Add(new BO.OrderItem() { ID = (int)orderItem?.ID!, ProductID = p.ID, ProductName = p.Name, ProductPrice = p.Price, Amount = (int)orderItem?.Amount!, TotalPrice = p.Price * (int)orderItem?.Amount! });
                         price += orderItem?.Price ?? 0;
                     }
-                    catch (Exception ex) { throw new DalException("error in getting a product", ex); }
+                    catch (DO.InvalidID ex) { throw new DalException("error in getting a product", ex); }
                 }
-                BO.Order oB = new BO.Order() { ID = oD.ID, CustomerName = oD.CustomerName, CustomerAddress = oD.CustomerAddress, CustomerEmail = oD.CustomerEmail, Status = BO.Enums.OrderStatus.DeliveredToCustomer, OrderDate = oD.OrderDate, ShipDate = oD.ShipDate, DeliveryDate = DateTime.Now, Items = lItems, TotalPrice = price };
+                BO.Order oB = new BO.Order() { ID = oD.ID, CustomerName = oD.CustomerName, CustomerAddress = oD.CustomerAddress, CustomerEmail = oD.CustomerEmail, Status = BO.Enums.OrderStatus.DeliveredToCustomer, OrderDate = oD.OrderDate, ShipDate = oD.ShipDate, DeliveryDate = DateTime.Now, Items = lItems!, TotalPrice = price };
                 return oB;
             }
-            catch (Exception ex) { throw new DalException("error in getting items in order", ex); }
+            catch (DO.InvalidID ex) { throw new DalException("error in getting items in order", ex); }
         }
         /// <summary>
         /// updates the amount of product in order
@@ -168,34 +179,44 @@ namespace BlImplementation
         /// <exception cref="DalException">exception from dal</exception>
         public BO.Order ManagerUpdate(int ID, int product, int amount)
         {
+            DO.Order oD;
             try
             {
-                DO.Order oD = Dal.Order.Get(ID);
-                try
+                oD = (DO.Order)dal?.Order.Get(ID)!;
+            }
+            catch (DO.InvalidID ex) { throw new DalException("error in updating an order", ex); }
+            if (oD.ShipDate != null)
+                throw new BO.AlreadyDone("the order alredy shiped");
+            DO.OrderItem item;
+            try
+            {
+                item = dal.OrderItem.GetByF((DO.OrderItem? orderItem) => { return orderItem?.OrderID == ID && orderItem?.ProductID == product; });
+            }
+            catch (DO.InvalidID ex) { throw new DalException("error in getting an item in order", ex); }
+            item.Amount = amount;
+            try
+            {
+                dal.Order.Update(oD);
+            }
+            catch (Exception ex) { throw new DalException("error in updating an order", ex); }
+            double price = 0;
+            List<BO.OrderItem> lItems = new List<BO.OrderItem>();
+            try
+            {
+                foreach (DO.OrderItem? orderItem in dal.OrderItem.GetAll((DO.OrderItem? orderItem) => orderItem?.OrderID == ID))
                 {
-                    if (oD.ShipDate != null)
-                        throw new BO.AlreadyDone("the order alredy shiped");
-                    DO.OrderItem item = Dal.OrderItem.GetByF((DO.OrderItem? orderItem) => { return orderItem?.OrderID == ID && orderItem?.ProductID == product; });
-                    item.Amount = amount;
                     try
                     {
-                        Dal.Order.Update(oD);
-                    }
-                    catch (Exception ex) { throw new DalException("error in updating an order", ex); }
-                    double price = 0;
-                    List<BO.OrderItem> lItems = new List<BO.OrderItem>();
-                    foreach (DO.OrderItem? orderItem in Dal.OrderItem.GetAll((DO.OrderItem? orderItem) => orderItem?.OrderID == ID))
-                    {
-                        DO.Product p = Dal.Product.Get((int)orderItem?.ProductID!);
+                        DO.Product p = dal.Product.Get((int)orderItem?.ProductID!);
                         lItems.Add(new BO.OrderItem() { ID = (int)orderItem?.ID!, ProductID = p.ID, ProductName = p.Name, ProductPrice = p.Price, Amount = (int)orderItem?.Amount!, TotalPrice = p.Price * (int)orderItem?.Amount! });
                         price += orderItem?.Price ?? 0;
                     }
-                    BO.Order oB = new BO.Order() { ID = oD.ID, CustomerName = oD.CustomerName, CustomerAddress = oD.CustomerAddress, CustomerEmail = oD.CustomerEmail, Status = BO.Enums.OrderStatus.OrderConfirmed, OrderDate = oD.OrderDate, ShipDate = oD.ShipDate, DeliveryDate = oD.DeliveryDate, Items = lItems, TotalPrice = price };
-                    return oB;
+                    catch (DO.InvalidID ex) { throw new DalException("error in getting a product", ex); }
                 }
-                catch (Exception ex) { throw new DalException("error in getting items in order", ex); }
+                BO.Order oB = new BO.Order() { ID = oD.ID, CustomerName = oD.CustomerName, CustomerAddress = oD.CustomerAddress, CustomerEmail = oD.CustomerEmail, Status = BO.Enums.OrderStatus.OrderConfirmed, OrderDate = oD.OrderDate, ShipDate = oD.ShipDate, DeliveryDate = oD.DeliveryDate, Items = lItems!, TotalPrice = price };
+                return oB;
             }
-            catch (Exception ex) { throw new DalException("error in getting an order", ex); }
+            catch (Exception ex) { throw new DalException("error in getting items in order", ex); }
         }
         /// <summary>
         /// returns list of the order tracking
@@ -205,26 +226,27 @@ namespace BlImplementation
         /// <exception cref="DalException">exception from dal</exception>
         public OrderTracking OrderTracking(int ID)
         {
+            DO.Order oD;
             try
             {
-                DO.Order oD = Dal.Order.Get(ID);
-                List<Tuple<DateTime?, string?>?> lOrderT = new List<Tuple<DateTime?, string?>?>();
-                BO.Enums.OrderStatus oStatus = BO.Enums.OrderStatus.OrderConfirmed;
-                lOrderT.Add(new Tuple<DateTime?, string?>(oD.OrderDate, "The order has been created"));
-                if (oD.ShipDate != DateTime.MinValue)
-                {
-                    lOrderT.Add(new Tuple<DateTime?, string?>(oD.ShipDate, "The order has been sent"));
-                    oStatus = BO.Enums.OrderStatus.Shipped;
-                }
-                if (oD.DeliveryDate != DateTime.MinValue)
-                {
-                    lOrderT.Add(new Tuple<DateTime?, string?>(oD.DeliveryDate, "The order has been delivered"));
-                    oStatus = BO.Enums.OrderStatus.DeliveredToCustomer;
-                }
-                BO.OrderTracking orderTracking = new BO.OrderTracking() { ID = ID, Status = oStatus, list = lOrderT };
-                return orderTracking;
+                oD = (DO.Order)dal?.Order.Get(ID)!;
             }
-            catch (Exception ex) { throw new DalException("error in getting an order", ex); }
+            catch (DO.InvalidID ex) { throw new DalException("error in updating an order", ex); }
+            List<Tuple<DateTime?, string?>?> lOrderT = new List<Tuple<DateTime?, string?>?>();
+            BO.Enums.OrderStatus oStatus = BO.Enums.OrderStatus.OrderConfirmed;
+            lOrderT.Add(new Tuple<DateTime?, string?>(oD.OrderDate, "The order has been created"));
+            if (oD.ShipDate != DateTime.MinValue)
+            {
+                lOrderT.Add(new Tuple<DateTime?, string?>(oD.ShipDate, "The order has been sent"));
+                oStatus = BO.Enums.OrderStatus.Shipped;
+            }
+            if (oD.DeliveryDate != DateTime.MinValue)
+            {
+                lOrderT.Add(new Tuple<DateTime?, string?>(oD.DeliveryDate, "The order has been delivered"));
+                oStatus = BO.Enums.OrderStatus.DeliveredToCustomer;
+            }
+            BO.OrderTracking orderTracking = new BO.OrderTracking() { ID = ID, Status = oStatus, list = lOrderT };
+            return orderTracking;
         }
     }
 }

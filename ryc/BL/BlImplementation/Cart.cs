@@ -1,6 +1,5 @@
 ﻿using BlApi;
 using BO;
-using Dal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +10,8 @@ namespace BlImplementation
 {
     internal class Cart : ICart
     {
-        private DalApi.IDal Dal = new DalList();
+        DalApi.IDal? dal = DalApi.Factory.Get();
+
         /// <summary>
         /// adds product to cart
         /// </summary>
@@ -28,14 +28,14 @@ namespace BlImplementation
             }
             try
             {
-                DO.Product product = Dal.Product.Get(ID);
+                DO.Product product = (DO.Product)dal?.Product.Get(ID)!;
                 if (product.InStock == 0)
                     throw new LessAmount("there is much amount of the product in shop");
                 cart.Items.Add(new BO.OrderItem() { ID = cart.Items.Count + 1, ProductID = ID, ProductName = product.Name, ProductPrice = product.Price, Amount = 1, TotalPrice = product.Price });
                 cart.TotalPrice += product.Price;
                 return cart;
             }
-            catch (Exception ex) { throw new DalException("error in getting a product", ex); }
+            catch (DO.InvalidID ex) { throw new DalException("error in getting a product", ex); }
         }
         /// <summary>
         /// updates amount of product in cart
@@ -60,7 +60,7 @@ namespace BlImplementation
                 else
                 {
                     cart.Items?.Remove(item);
-                    DO.Product product = Dal.Product.Get(ID);
+                    DO.Product product = (DO.Product)dal?.Product.Get(ID)!;
                     item.Amount = amount;
                     item.TotalPrice = amount * item.ProductPrice;
                     cart.TotalPrice += product.Price * amount;
@@ -68,7 +68,7 @@ namespace BlImplementation
                 }
                 return cart;
             }
-            catch (Exception ex) { throw new DalException("error in getting a product", ex); }
+            catch (DO.InvalidID ex) { throw new DalException("error in getting a product", ex); }
         }
         /// <summary>
         /// creates an order according to the cart
@@ -88,35 +88,36 @@ namespace BlImplementation
             {
                 try
                 {
-                    DO.Product product = Dal.Product.Get((int)orderItem?.ProductID!);
-                    if (orderItem.Amount <= 0)
+                    DO.Product product = (DO.Product)dal?.Product.Get((int)orderItem?.ProductID!)!;
+                    if (orderItem?.Amount <= 0)
                         throw new LessAmount("there is invalid amount of product");
-                    if (product.InStock - orderItem.Amount < 0)
+                    if (product.InStock - orderItem?.Amount < 0)
                         throw new LessAmount("there is much amount of the product in shop");
                 }
-                catch (Exception ex) { throw new DalException("error in getting a product", ex); }
+                catch (DO.InvalidID ex) { throw new DalException("error in getting a product", ex); }
             }
             DO.Order order = new DO.Order() { CustomerName = cart.CustomerName, CustomerEmail = cart.CustomerEmail, CustomerAddress = cart.CustomerEmail, OrderDate = DateTime.Now, ShipDate = DateTime.MinValue, DeliveryDate = DateTime.MinValue };
+            int ID;
             try
             {
-                int ID = Dal.Order.Add(order);
-                foreach (BO.OrderItem? orderItem in cart.Items)
-                {
-                    try
-                    {
-                        Dal.OrderItem.Add(new DO.OrderItem() { OrderID = ID, ProductID = (int)orderItem?.ProductID!, Amount = orderItem.Amount, Price = orderItem.ProductPrice });
-                    }
-                    catch (Exception ex) { throw new DalException("error in adding a product to order", ex); }
-                    try
-                    {
-                        DO.Product product = Dal.Product.Get(orderItem.ProductID);
-                        product.InStock -= orderItem.Amount;
-                        Dal.Product.Update(product);
-                    }
-                    catch (Exception ex) { throw new DalException("error in getting and updating a product", ex); }
-                }
+                ID = (int)dal?.Order.Add(order)!;
             }
             catch (Exception ex) { throw new DalException("error in adding an order", ex); }
+            foreach (BO.OrderItem? orderItem in cart.Items)
+            {
+                try
+                {
+                    dal.OrderItem.Add(new DO.OrderItem() { OrderID = ID, ProductID = (int)orderItem?.ProductID!, Amount = orderItem.Amount, Price = orderItem.ProductPrice });
+                }
+                catch (Exception ex) { throw new DalException("error in adding a product to order", ex); }
+                try
+                {
+                    DO.Product product = dal.Product.Get(orderItem.ProductID);
+                    product.InStock -= orderItem.Amount;
+                    dal.Product.Update(product);
+                }
+                catch (DO.InvalidID ex) { throw new DalException("error in getting and updating a product", ex); }
+            }
         }
     }
 }

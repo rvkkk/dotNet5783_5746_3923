@@ -1,6 +1,4 @@
-﻿using BlApi;
-using BlImplementation;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,11 +19,11 @@ namespace PL.Products
     /// </summary>
     public partial class ProductListWindow : Window
     {
-        private IBL bl = new Bl();
+        BlApi.IBL? bl = BlApi.Factory.Get();
         public ProductListWindow()
         {
             InitializeComponent();
-            ProductsListView.ItemsSource = bl.Product.GetAll();
+            ProductsListView.ItemsSource = bl?.Product.GetAll();
             ProductCategoriesSelector.ItemsSource = Enum.GetValues(typeof(BO.Enums.Category));
         }
 
@@ -33,24 +31,24 @@ namespace PL.Products
         {
             var s = sender as ComboBox;
             if (ProductCategoriesSelector.SelectedItem.ToString() == "NONE")
-                ProductsListView.ItemsSource = bl.Product.GetAll();
+                ProductsListView.ItemsSource = bl?.Product.GetAll();
             else
-                ProductsListView.ItemsSource = bl.Product.GetAll((BO.Product? p) => p?.Category == (BO.Enums.Category)s!.SelectedIndex);
+                ProductsListView.ItemsSource = bl?.Product.GetAll((BO.Product? p) => p?.Category == (BO.Enums.Category)s!.SelectedIndex);
         }
 
         private void AddProductButton_Click(object sender, RoutedEventArgs e)
         {
             new ProductWindow().ShowDialog();
-            ProductsListView.ItemsSource = bl.Product.GetAll();
+            ProductsListView.ItemsSource = bl?.Product.GetAll();
         }
 
         private void ProductsListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            ListView l = sender as ListView;
+            ListView l = (ListView)sender;
             BO.ProductForList pL = (BO.ProductForList)l!.SelectedItem;
-            BO.Product p = bl.Product.Get(pL.ID);
+            BO.Product p = bl?.Product.Get(pL.ID)!;
             new ProductWindow(p).ShowDialog();
-            ProductsListView.ItemsSource = bl.Product.GetAll();
+            ProductsListView.ItemsSource = bl?.Product.GetAll();
         }
 
     }

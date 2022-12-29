@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BlImplementation
 {
-    sealed public class Bl : IBL
+    sealed internal class Bl : IBL
     {
         public ICart Cart => new Cart();
         public IOrder Order => new Order();
