@@ -28,18 +28,41 @@ namespace PL.Products
             ProductCategoriesSelector.ItemsSource = Enum.GetValues(typeof(BO.Enums.Category));
             ProductCategoriesSelector.SelectedItem = "NONE";
             ProductButton.Content = "Add Product";
+            ProductAmountL.Visibility = Visibility.Hidden;
+            tbProductAmonut.Visibility = Visibility.Hidden;
         }
         public ProductWindow(BO.Product p)
         {
             InitializeComponent();
             ProductButton.Content = "Update Product";
-            tbProductID.SelectedText = p.ID.ToString();
+            tbProductID.Text = p.ID.ToString();
             tbProductID.IsEnabled = false;
             tbProductName.Text = p.Name;
             ProductCategoriesSelector.ItemsSource = Enum.GetValues(typeof(BO.Enums.Category));
             ProductCategoriesSelector.SelectedItem = p.Category!;
             tbProductPrice.Text = p.Price.ToString();
             tbProductInStock.Text = p.InStock.ToString();
+            ProductAmountL.Visibility = Visibility.Hidden;
+            tbProductAmonut.Visibility = Visibility.Hidden;
+        }
+
+        public ProductWindow(BO.ProductItem p)
+        {
+            InitializeComponent();
+            ProductButton.Visibility = Visibility.Hidden;
+            tbProductID.Text = p.ID.ToString();
+            tbProductID.IsEnabled = false;
+            tbProductName.Text = p.Name;
+            tbProductName.IsEnabled = false;
+            ProductCategoriesSelector.ItemsSource = Enum.GetValues(typeof(BO.Enums.Category));
+            ProductCategoriesSelector.SelectedItem = p.Category!;
+            ProductCategoriesSelector.IsEnabled = false;
+            tbProductPrice.Text = p.Price.ToString();
+            tbProductPrice.IsEnabled = false;
+            tbProductInStock.Text = p.InStock.ToString();
+            tbProductInStock.IsEnabled = false;
+            tbProductAmonut.Text = p.Amount.ToString();
+            tbProductAmonut.IsEnabled = false;
         }
 
         private void ProductButton_Click(object sender, RoutedEventArgs e)

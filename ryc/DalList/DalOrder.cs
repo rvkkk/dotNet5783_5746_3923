@@ -21,6 +21,7 @@ internal class DalOrder : IOrder
         DataSource.lOrder.Add(o);
         return o.ID;
     }
+
     /// <summary>
     /// deletes order
     /// </summary>
@@ -28,30 +29,19 @@ internal class DalOrder : IOrder
     /// <exception cref="Exception">there in no such an order id</exception>
     public void Delete(int ID)
     {
-        bool flag = false;
-        for (int i = 0; i < DataSource.lOrder.Count; i++)
-        {
-            if (DataSource.lOrder[i]?.ID == ID)
-            {
-                DataSource.lOrder.RemoveAt(i);  
-                flag = true;  
-            }                       
-        }
-        if (!flag)
+        if (DataSource.lProduct.RemoveAll(p => p?.ID == ID) == 0)
             throw new InvalidID("there in no such an id");
     }
+
     /// <summary>
     /// updates order
     /// </summary>
     /// <param name="o">recived order</param>
     public void Update(Order o)
     {
-        for (int i = 0; i < DataSource.lOrder.Count; i++)
-        {
-            if (DataSource.lOrder[i]?.ID == o.ID)
-                DataSource.lOrder[i] = o;
-        }
+        DataSource.lOrder[DataSource.lOrder.FindIndex(order => order?.ID == o.ID)] = o;
     }
+
     /// <summary>
     /// return order by id
     /// </summary>
@@ -60,13 +50,10 @@ internal class DalOrder : IOrder
     /// <exception cref="Exception">there in no such an order id</exception>
     public Order Get(int ID)
     {
-        for(int i=0; i < DataSource.lOrder.Count; i++)
-        {
-            if (DataSource.lOrder[i]?.ID == ID)
-                return (Order)DataSource.lOrder[i]!;
-        }
-        throw new InvalidID("there in no such an id");
+        return DataSource.lOrder.FirstOrDefault(p => p?.ID == ID) ??
+           throw new InvalidID("there in no such an id");
     }
+
     /// <summary>
     /// returns order by a function
     /// </summary>
@@ -75,12 +62,8 @@ internal class DalOrder : IOrder
     /// <exception cref="InvalidID">there in no such an order</exception>
     public Order GetByF(Func<Order?, bool>? func)
     {
-        for (int i = 0; i < DataSource.lOrder.Count; i++)
-        {
-            if (func!(DataSource.lOrder[i]))
-                return (Order)DataSource.lOrder[i]!;
-        }
-        throw new InvalidID("there in no such an order");
+        return DataSource.lOrder.Where(func!).First() ??
+         throw new InvalidID("there in no such an order");
     }
 
     /// <summary>
@@ -89,14 +72,9 @@ internal class DalOrder : IOrder
     /// <returns>orders</returns>
     public IEnumerable<Order?> GetAll(Func<Order?, bool>? func = null)
     {
-        List<Order?> lorders = new List<Order?>();
-        for (int i = 0; i < DataSource.lOrder.Count; i++)
-        {
-            if (func == null)
-                lorders.Add(DataSource.lOrder[i]);
-            else if (func(DataSource.lOrder[i]))
-                lorders.Add(DataSource.lOrder[i]);
-        }
-        return lorders;
+        if (func == null)
+            return DataSource.lOrder.Select(p => p);
+        else
+            return DataSource.lOrder.Where(func);
     }
 }

@@ -6,9 +6,36 @@
         xmlns:local="clr-namespace:PL.Products"
         mc:Ignorable="d"
         Title="ProductWindow" Height="640" Width="800" Background="#FFEDD0F1">
-    <Grid Name="MainGrid" Margin="100,84,100,84" RenderTransformOrigin="-0.121,0.848">
-        <Grid Name="UpGrid" Height="auto" Grid.Row="0" Width="auto" Margin="100,0,100,100" Grid.ColumnSpan="2">
+    <Window.Resources>
+        <Style x:Key="productControls" TargetType="Control">
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="Foreground" Value="#FFFBF5F5" />
+        </Style>
+        <Style x:Key="productLabels" BasedOn="{StaticResource productControls}" TargetType="Label">
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="Margin" Value="134,0,0,0" />
+        </Style>
+        <Style BasedOn="{StaticResource productControls}" TargetType="TextBox">
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="Width" Value="150" />
+            <Setter Property="Height" Value="25" />
+            <Setter Property="Background" Value="#FFFBF5F5" />
+            <Setter Property="Foreground" Value="Black" />
+        </Style>
+    </Window.Resources>
+    <Grid Name="MainGrid" Background="#FF565553">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <Label x:Name="titleL" Content="PRODUCT DETAILS" VerticalAlignment="Top" Foreground="#FFED3619" FontWeight="Bold" FontSize="28" HorizontalContentAlignment="Center" Margin="0,20,0,20"/>
+        <Grid Name="UpGrid" Height="auto" Grid.Row="1" Width="auto" Margin="100,0,100,0">
             <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
@@ -19,24 +46,19 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions >
-            <Label x:Name="ProductIDL" Content="ID:" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" FontSize="16"/>
-            <Label x:Name="ProductCategoryL" Content="Category:" HorizontalAlignment="Left" Grid.Row="1" VerticalAlignment="Top" FontSize="16" FontWeight="Bold" Margin="84,17,0,0"/>
-            <Label x:Name="ProductNameL" Content="Name:" HorizontalAlignment="Left" Grid.Row="2" VerticalAlignment="Top" FontWeight="Bold" FontSize="16" RenderTransformOrigin="1.264,0.609" Margin="84,17,0,0"/>
-            <Label x:Name="ProductPriceL" Content="Price:" HorizontalAlignment="Left" Grid.Row="3" VerticalAlignment="Top" FontSize="16" FontWeight="Bold" Margin="84,16,0,0"/>
-            <Label x:Name="ProductInStockL" Content="In stock:" HorizontalAlignment="Left" Grid.Row="4" VerticalAlignment="Center" FontSize="16" FontWeight="Bold" Margin="84,0,0,0"/>
-            <TextBox x:Name="tbProductID" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Center" TextWrapping="Wrap" Text="" VerticalAlignment="Center" Width="150" Height="25" FontSize="16" FontWeight="Bold" Background="#FFD4F5FA"/>
-            <ComboBox x:Name="ProductCategoriesSelector" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Center" Text="" VerticalAlignment="Center" Width="150" Height="25" FontSize="16" FontWeight="Bold">
-                <ComboBox.Background>
-                    <LinearGradientBrush EndPoint="0,1">
-                        <GradientStop Color="#FFF0F0F0"/>
-                        <GradientStop Color="#FFD4F5FA" Offset="1"/>
-                    </LinearGradientBrush>
-                </ComboBox.Background>
-            </ComboBox>
-            <TextBox x:Name="tbProductName" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Center" TextWrapping="Wrap" Text="" VerticalAlignment="Center" Width="150" Height="25" FontSize="16" FontWeight="Bold" Background="#FFD4F5FA"/>
-            <TextBox x:Name="tbProductPrice" Grid.Column="1" Grid.Row="3" HorizontalAlignment="Center" TextWrapping="Wrap" Text="" VerticalAlignment="Center" Width="150" Height="25" FontSize="16" FontWeight="Bold" Background="#FFD4F5F8"/>
-            <TextBox x:Name="tbProductInStock" Grid.Column="1" Grid.Row="4" HorizontalAlignment="Center" TextWrapping="Wrap" Text="" VerticalAlignment="Center" Width="150" Height="25" FontSize="16" FontWeight="Bold" Background="#FFD4F5FA"/>
+            <Label x:Name="ProductIDL" Content="ID:" Style="{StaticResource productControls}"/>
+            <Label x:Name="ProductCategoryL" Content="Category:" Grid.Row="1" Style="{StaticResource productLabels}"/>
+            <Label x:Name="ProductNameL" Content="Name:" Grid.Row="2" Style="{StaticResource productLabels}"/>
+            <Label x:Name="ProductPriceL" Content="Price:" Grid.Row="3" Style="{StaticResource productLabels}"/>
+            <Label x:Name="ProductInStockL" Content="In stock:" Grid.Row="4" Style="{StaticResource productLabels}"/>
+            <Label x:Name="ProductAmountL" Content="Amount:" Grid.Row="5" Style="{StaticResource productLabels}"/>
+            <TextBox x:Name="tbProductID" Grid.Column="1" Grid.Row="0"/>
+            <ComboBox x:Name="ProductCategoriesSelector" Grid.Column="1" Grid.Row="1" Style="{StaticResource productControls}" Width="150" Height="25" Foreground="#FF565553"/>
+            <TextBox x:Name="tbProductName" Grid.Column="1" Grid.Row="2"/>
+            <TextBox x:Name="tbProductPrice" Grid.Column="1" Grid.Row="3"/>
+            <TextBox x:Name="tbProductInStock" Grid.Column="1" Grid.Row="4"/>
+            <TextBox x:Name="tbProductAmonut" Grid.Column="1" Grid.Row="5"/>
         </Grid>
-        <Button x:Name="ProductButton" Content="Update Product" Height="60" Width="130" Margin="0,370,0,0" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="1" Click="ProductButton_Click" FontSize="16" FontWeight="Bold" Background="#FFD4F5FA"/>
+        <Button x:Name="ProductButton" Content="Update Product" Height="60" Width="130" Margin="0,40,0,40" VerticalAlignment="Top" HorizontalAlignment="Center" Grid.Row="2" Click="ProductButton_Click" FontSize="16" FontWeight="Bold" Background="#FFED3619" Foreground="#FFFBF5F5" BorderBrush="#FFFBF5F5"/>
     </Grid>
 </Window>

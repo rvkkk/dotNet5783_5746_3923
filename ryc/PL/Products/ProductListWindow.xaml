@@ -6,29 +6,61 @@
         xmlns:local="clr-namespace:PL.Products"
         mc:Ignorable="d"
         Title="ProductListWindow" Height="640" Width="800">
-    <Grid Name="MainGrid">
+    <Window.Resources>
+        <DataTemplate x:Key="myProductsList" DataType="local:bl?.Product.GetAll()">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="{Binding Path=ID}" Width="100" Margin="10"/>
+                <TextBlock Grid.Column="1" Text="{Binding Path=Name}" Width="100" Margin="10"/>
+                <TextBox Grid.Column="2" Text="{Binding Path=Category}" Width="100" Margin="10"/>
+                <TextBox Grid.Column="3" Text="{Binding Path=Price}" Width="100" Margin="10"/>
+                <Button Grid.Column="4" Content="view Product" Margin="10"/>
+            </Grid>
+        </DataTemplate>
+    </Window.Resources>
+    <Grid Name="MainGrid" Background="#FF565553">
         <Grid.RowDefinitions>
+            <RowDefinition Height="40*"/>
             <RowDefinition Height="40*"/>
             <RowDefinition Height="500*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <Grid Name="UpGrid" HorizontalAlignment="Stretch" Height="auto" Grid.Row="0"
-VerticalAlignment="Stretch" Width="auto">
+        <Grid Name="UpGrid" HorizontalAlignment="Stretch" Height="auto" Grid.Row="0" VerticalAlignment="Stretch" Width="auto">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="400*"/>
                 <ColumnDefinition Width="373*"/>
-                <ColumnDefinition Width="27*"/>
             </Grid.ColumnDefinitions >
-            <Label x:Name="ProductCategoryLabel" Content="Category:" Grid.Column="0" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.521,0.618" FontSize="24" FontWeight="Bold"/>
-            <ComboBox x:Name="ProductCategoriesSelector" HorizontalAlignment= "Stretch" VerticalAlignment="Stretch" Grid.Column="1" FontSize="20" FontWeight="Bold" SelectionChanged="ProductCategoriesSelector_SelectionChanged"/>
+            <Label x:Name="ProductCategoryLabel" Content="Category:" Grid.Column="0" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.521,0.618" FontSize="24" FontWeight="Bold" Foreground="#FFFBF5F5"/>
+            <ComboBox x:Name="ProductCategoriesSelector" Grid.Column="1" FontSize="20" FontWeight="Bold" SelectionChanged="ProductCategoriesSelector_SelectionChanged" Foreground="#FF565553" Grid.ColumnSpan="2"/>
         </Grid>
-        <ListView x:Name="ProductsListView" Grid.Row="1" d:ItemsSource="{d:SampleData ItemCount=5}" FontSize="16" Background="#FFE9C0F1" MouseDoubleClick="ProductsListView_MouseDoubleClick">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn/>
-                </GridView>
-            </ListView.View>
+
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="ID" Width="100" Margin="10"/>
+            <TextBlock Grid.Column="1" Text="Name" Width="100" Margin="10"/>
+            <TextBlock Grid.Column="2" Text="Category" Width="100" Margin="10"/>
+            <TextBlock Grid.Column="3" Text="Price" Width="100" Margin="10"/>
+        </Grid>
+        <ListView ItemsSource="{Binding}" ItemTemplate="{StaticResource myProductsList}" Background="#FF565553" Foreground="#FFED3619" x:Name="ProductsListView" Grid.Row="2" d:ItemsSource="{d:SampleData ItemCount=5}" FontSize="16" MouseDoubleClick="ViewProductWindow" BorderBrush="#FFFBF5F5">
         </ListView>
-        <Button Content="Add new Product" Grid.Row="2" HorizontalAlignment="Right" Margin="5" Padding="5" Click="AddProductButton_Click"/>
+        <Button Content="Add new Product" Grid.Row="3" HorizontalAlignment="Right" Margin="5" Padding="5" Click="AddProductButton_Click" FontWeight="Bold" Background="#FFED3619" Foreground="#FFFBF5F5" BorderBrush="#FFFBF5F5"/>
     </Grid>
 </Window>

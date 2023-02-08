@@ -16,6 +16,7 @@ internal static class DataSource
     internal static List<Product?> lProduct = new List<Product?>();
     internal static List<Order?> lOrder = new List<Order?>();  
     internal static List<OrderItem?> lOrderItem = new List<OrderItem?>();
+
     /// <summary>
     /// static constructor
     /// </summary>
@@ -23,6 +24,7 @@ internal static class DataSource
     {
         s_Initialize();
     }
+
     /// <summary>
     /// calls the creating functions
     /// </summary>
@@ -32,6 +34,7 @@ internal static class DataSource
         createOrders();
         createOrderItems();
     }
+
     /// <summary>
     /// creates new products
     /// </summary>
@@ -42,6 +45,7 @@ internal static class DataSource
         for (int i = 0; i < 10; i++)
             lProduct.Add( new Product { ID = s_rand.Next(100000, 1000000), Name = productNames[i], Price = s_rand.Next(20, 80), Category = productCategories[i], InStock = s_rand.Next(0, 50) });
     }
+
     /// <summary>
     /// creates new orders
     /// </summary>
@@ -57,6 +61,7 @@ internal static class DataSource
             lOrder.Add( new Order { ID = Config.OrderID, CustomerName = cName[p], CustomerAddress = cAddress[p], CustomerEmail = cEmail[p], OrderDate = DateTime.Now, ShipDate = null, DeliveryDate = null });
         }
     }
+
     /// <summary>
     /// creates new orderItems
     /// </summary>
@@ -69,6 +74,7 @@ internal static class DataSource
             lOrderItem.Add( new OrderItem { ID = Config.OrderItemID, OrderID = (int)lOrder[i % 20]?.ID!, ProductID = (int)lProduct[i % n]?.ID!, Amount = s_rand.Next(1, 10), Price = (double)lProduct[i % n]?.Price! });
         }
     }
+
     /// <summary>
     /// config class
     /// </summary>

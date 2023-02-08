@@ -20,7 +20,7 @@ namespace BO
         /// <summary>
         /// list of satuses of order
         /// </summary>
-        public List<Tuple<DateTime?, string?>?>? list { get; set; }
+        public IEnumerable<Tuple<DateTime?, string?>?>? list { get; set; }
         /// <summary>
         /// get a string that represents order tracking
         /// </summary>
@@ -39,6 +39,5 @@ status list:
             }
             return s;
         }
-
     }
 }

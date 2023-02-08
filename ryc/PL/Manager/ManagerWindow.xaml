@@ -1,16 +1,16 @@
-﻿<Window x:Class="PL.MainWindow"
+﻿<Window x:Class="PL.Manager.ManagerWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:PL"
+        xmlns:local="clr-namespace:PL.Manager"
         mc:Ignorable="d"
-        Title="MainWindow" Height="782" Width="1851">
+        Title="ManagerWindow" Height="450" Width="800">
     <Window.Resources>
         <Style TargetType="Button">
-            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
             <Setter Property="VerticalAlignment" Value="Top" />
-            <Setter Property="Height" Value="96" />
+            <Setter Property="Height" Value="96" /> 
             <Setter Property="Width" Value="215" />
             <Setter Property="FontSize" Value="22" />
             <Setter Property="FontWeight" Value="Bold" />
@@ -20,9 +20,8 @@
         </Style>
     </Window.Resources>
     <Grid Background="#FF565553">
-        <Button x:Name="OpenManager" Content="manager" Click="ShowManagerButton_click" Margin="0,225,0,0" />
-        <Button x:Name="OpenNewOrder" Content="new order" Click="ShowNewOrderButton_click" Margin="0,405,0,0"/>
-        <Button x:Name="OpenOrderTrackingList" Content="orders tracking" Click="ShowOrdersTrackingButton_click" Margin="0,585,0,0"/>
-        <Label x:Name="titleL" Content="BURGERANCH" VerticalAlignment="Top" Foreground="#FFF1E9E9" FontWeight="Bold" FontSize="72" HorizontalContentAlignment="Center" Margin="0,65,0,0" Height="106"/>
+        <Button x:Name="OpenProductList" Content="view products list" Click="ShowProductsButton_click" Margin="108,217,0,0"/>
+        <Button x:Name="OpenOrdersList" Content="view orders list" Click="ShowOrdersButton_click" Margin="447,217,0,0"/>
+        <Label x:Name="titleL" Content="MANAGER" HorizontalAlignment="Center" Margin="0,31,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Center" FontSize="72" FontWeight="Bold" Foreground="#FFED3619"/>
     </Grid>
 </Window>

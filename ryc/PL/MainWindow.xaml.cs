@@ -1,5 +1,7 @@
 ﻿using BlApi;
 using BlImplementation;
+using PL.Manager;
+using PL.Orders;
 using PL.Products;
 using System;
 using System.Collections.Generic;
@@ -28,9 +30,20 @@ namespace PL
             InitializeComponent();
         }
 
-        private void ShowProductsButton_click(object sender, RoutedEventArgs e)
+ 
+        private void ShowManagerButton_click(object sender, RoutedEventArgs e)
         {
-            new ProductListWindow().Show();
+            new ManagerWindow().Show();
+        }
+
+        private void ShowNewOrderButton_click(object sender, RoutedEventArgs e)
+        {
+            new NewOrderWindow().Show();
+        }
+
+        private void ShowOrdersTrackingButton_click(object sender, RoutedEventArgs e)
+        {
+           // new orderTrackingWindow().Show();
         }
     }
 }

@@ -45,7 +45,7 @@ namespace BO
         /// <summary>
         /// list of items in order
         /// </summary>
-        public List<OrderItem?>? Items { get; set; }
+        public IEnumerable<OrderItem?>? Items { get; set; }
         /// <summary>
         /// price of order
         /// </summary>

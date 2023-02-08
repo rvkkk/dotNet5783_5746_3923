@@ -6,27 +6,42 @@
         xmlns:local="clr-namespace:PL.Orders"
         mc:Ignorable="d"
         Title="OrdersListWindow" Height="640" Width="800">
-    <Grid Name="MainGrid">
+    <Window.Resources>
+        <DataTemplate DataType="local:bl?.Orders.GetAll()">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="{Binding Path=ID}" />
+                <TextBlock Grid.Column="1" Text="{Binding Path=CustomerName}" />
+                <TextBox Grid.Column="2" Text="{Binding Path=Status}" />
+                <TextBox Grid.Column="3" Text="{Binding Path=AmountOfItems}" />
+                <TextBox Grid.Column="4" Text="{Binding Path=TotalPrice}" />
+                <Button Grid.Column="5" Content="view Order" Click="ViewOrderWindow"/>
+            </Grid>
+        </DataTemplate>
+    </Window.Resources>
+    <Grid Name="MainGrid" Background="#FF565553">
         <Grid.RowDefinitions>
             <RowDefinition Height="40*"/>
             <RowDefinition Height="500*"/>
-            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <Grid Name="UpGrid" HorizontalAlignment="Stretch" Height="auto" Grid.Row="0"
-VerticalAlignment="Stretch" Width="auto">
+        <Grid Name="UpGrid" HorizontalAlignment="Stretch" Height="auto" Grid.Row="0" VerticalAlignment="Stretch" Width="auto">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions >
-            <Label x:Name="OrderStatusLabel" Content="Status:" Grid.Column="0" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.521,0.618" FontSize="24" FontWeight="Bold"/>
-            <ComboBox x:Name="OrderStatusesSelector" HorizontalAlignment= "Stretch" VerticalAlignment="Stretch" Grid.Column="1" FontSize="20" FontWeight="Bold"/>
+            <Label x:Name="OrderStatusLabel" Content="Status:" Grid.Column="0" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.521,0.618" FontSize="24" FontWeight="Bold" Foreground="#FFFBF5F5"/>
+            <ComboBox x:Name="OrderStatusesSelector" HorizontalAlignment= "Stretch" VerticalAlignment="Stretch" Grid.Column="1" FontSize="20" FontWeight="Bold" SelectionChanged="OrderStatusesSelector_SelectionChanged" Foreground="#FF565553"/>
         </Grid>
-        <ListView x:Name="OrdersListView" Grid.Row="1" d:ItemsSource="{d:SampleData ItemCount=5}" FontSize="16">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn/>
-                </GridView>
-            </ListView.View>
-        </ListView>
+        <ListView x:Name="OrdersListView" ItemsSource="{Binding}" Background="#FF565553" FontWeight="Bold" Foreground="#FFED3619" Grid.Row="1" FontSize="16" SelectionChanged="ViewOrderWindow" BorderBrush="#FFFBF5F5"/>
     </Grid>
 </Window>

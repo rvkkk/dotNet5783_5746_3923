@@ -23,7 +23,7 @@ namespace PL.Products
         public ProductListWindow()
         {
             InitializeComponent();
-            ProductsListView.ItemsSource = bl?.Product.GetAll();
+            DataContext = bl?.Product.GetAll();
             ProductCategoriesSelector.ItemsSource = Enum.GetValues(typeof(BO.Enums.Category));
         }
 
@@ -33,7 +33,7 @@ namespace PL.Products
             if (ProductCategoriesSelector.SelectedItem.ToString() == "NONE")
                 ProductsListView.ItemsSource = bl?.Product.GetAll();
             else
-                ProductsListView.ItemsSource = bl?.Product.GetAll((BO.Product? p) => p?.Category == (BO.Enums.Category)s!.SelectedIndex);
+                ProductsListView.ItemsSource = bl?.Product.GetAll((BO.ProductForList? p) => p?.Category == (BO.Enums.Category)s!.SelectedIndex);
         }
 
         private void AddProductButton_Click(object sender, RoutedEventArgs e)
@@ -42,14 +42,13 @@ namespace PL.Products
             ProductsListView.ItemsSource = bl?.Product.GetAll();
         }
 
-        private void ProductsListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private void ViewProductWindow(object sender, MouseButtonEventArgs e)
         {
             ListView l = (ListView)sender;
-            BO.ProductForList pL = (BO.ProductForList)l!.SelectedItem;
+            BO.ProductForList pL = (BO.ProductForList)l.SelectedItem;
             BO.Product p = bl?.Product.Get(pL.ID)!;
             new ProductWindow(p).ShowDialog();
             ProductsListView.ItemsSource = bl?.Product.GetAll();
         }
-
     }
 }

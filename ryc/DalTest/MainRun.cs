@@ -21,7 +21,6 @@ namespace DalTest
         /// </summary>
         static void Products()
         {
-
             int choose, ID;
             Console.WriteLine("enter 0 to add product");
             Console.WriteLine("enter 1 to show product");
@@ -308,7 +307,6 @@ namespace DalTest
                                 break;
                             }
                     }
-
                 }
                 catch (Exception ex)
                 {
