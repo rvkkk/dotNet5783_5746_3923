@@ -20,7 +20,7 @@ namespace BO
         /// <summary>
         /// list of satuses of order
         /// </summary>
-        public IEnumerable<Tuple<DateTime?, string?>?>? list { get; set; }
+        public IEnumerable<Tuple<DateTime?, string?>?>? List { get; set; }
         /// <summary>
         /// get a string that represents order tracking
         /// </summary>
@@ -32,7 +32,7 @@ Order tracking ID={ID}:
 status: {Status}
 status list: 
 ";
-            foreach (var item in list!)
+            foreach (var item in List!)
             {
                 s+= item?.Item1 + " ";
                 s+=item?.Item2 + "\n";

@@ -11,6 +11,6 @@ namespace BlApi
     {
         public Cart AddToCart(Cart cart, int ID);
         public Cart UpdateCart(Cart cart, int ID, int amount);
-        public void MakeAnOrder(Cart cart);
+        public int MakeAnOrder(Cart cart);
     }
 }

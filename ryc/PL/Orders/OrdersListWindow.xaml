@@ -3,32 +3,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        DataContext="{Binding Orders, RelativeSource={RelativeSource Self} }"
         xmlns:local="clr-namespace:PL.Orders"
         mc:Ignorable="d"
         Title="OrdersListWindow" Height="640" Width="800">
-    <Window.Resources>
-        <DataTemplate DataType="local:bl?.Orders.GetAll()">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="{Binding Path=ID}" />
-                <TextBlock Grid.Column="1" Text="{Binding Path=CustomerName}" />
-                <TextBox Grid.Column="2" Text="{Binding Path=Status}" />
-                <TextBox Grid.Column="3" Text="{Binding Path=AmountOfItems}" />
-                <TextBox Grid.Column="4" Text="{Binding Path=TotalPrice}" />
-                <Button Grid.Column="5" Content="view Order" Click="ViewOrderWindow"/>
-            </Grid>
-        </DataTemplate>
-    </Window.Resources>
     <Grid Name="MainGrid" Background="#FF565553">
         <Grid.RowDefinitions>
             <RowDefinition Height="40*"/>
@@ -42,6 +20,58 @@
             <Label x:Name="OrderStatusLabel" Content="Status:" Grid.Column="0" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.521,0.618" FontSize="24" FontWeight="Bold" Foreground="#FFFBF5F5"/>
             <ComboBox x:Name="OrderStatusesSelector" HorizontalAlignment= "Stretch" VerticalAlignment="Stretch" Grid.Column="1" FontSize="20" FontWeight="Bold" SelectionChanged="OrderStatusesSelector_SelectionChanged" Foreground="#FF565553"/>
         </Grid>
-        <ListView x:Name="OrdersListView" ItemsSource="{Binding}" Background="#FF565553" FontWeight="Bold" Foreground="#FFED3619" Grid.Row="1" FontSize="16" SelectionChanged="ViewOrderWindow" BorderBrush="#FFFBF5F5"/>
+        <ListView x:Name="OrdersListView" ItemsSource="{Binding}" Background="#FF565553" FontWeight="Bold" Foreground="#FFED3619" Grid.Row="1" FontSize="16" BorderBrush="#FFFBF5F5" MouseDoubleClick="ViewOrderWindow">
+        <ListView.ItemContainerStyle>
+            <Style TargetType="ListViewItem">
+                <Setter Property="Control.HorizontalContentAlignment" Value="Stretch"/>
+            </Style>
+        </ListView.ItemContainerStyle>
+        <ListView.View>
+            <GridView>
+                <GridViewColumn Width="100" Header="ID">
+                    <GridViewColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Margin="-5,-1" Text="{Binding ID}" TextAlignment="Center" Padding="2"/>
+                        </DataTemplate>
+                    </GridViewColumn.CellTemplate>
+                </GridViewColumn>
+                <GridViewColumn Width="Auto" Header="Customer Name">
+                    <GridViewColumn.CellTemplate>
+                        <DataTemplate>
+                                <TextBlock Margin="-5,-1" Text="{Binding CustomerName}" TextAlignment="Center" Padding="2"/>
+                        </DataTemplate>
+                    </GridViewColumn.CellTemplate>
+                </GridViewColumn>
+                    <GridViewColumn Width="170" Header="Status">
+                    <GridViewColumn.CellTemplate>
+                        <DataTemplate>
+                                <TextBlock Margin="-5,-1" Text="{Binding Status}" TextAlignment="Center" Padding="2"/>
+                        </DataTemplate>
+                    </GridViewColumn.CellTemplate>
+                </GridViewColumn>
+                    <GridViewColumn Width="auto" Header="Amount of items">
+                    <GridViewColumn.CellTemplate>
+                        <DataTemplate>
+                                <TextBlock Margin="-5,-1" Text="{Binding AmountOfItems}" TextAlignment="Center" Padding="2"/>
+                        </DataTemplate>
+                    </GridViewColumn.CellTemplate>
+                </GridViewColumn>
+                    <GridViewColumn Width="100" Header="Total Price">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Margin="-5,-1" Text="{Binding TotalPrice}" TextAlignment="Center" Padding="2"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Width="120" Header="view Order">
+                    <GridViewColumn.CellTemplate>
+                        <DataTemplate>
+                                <Button Margin="-5,-1" Padding="2" Content="view Order" Click="ViewOrderWindowButton" FontWeight="Bold" Background="#FFED3619" Foreground="#FFFBF5F5" BorderBrush="#FFFBF5F5"/>
+                        </DataTemplate>
+                    </GridViewColumn.CellTemplate>
+                </GridViewColumn>
+            </GridView>
+        </ListView.View>
+        </ListView>
     </Grid>
 </Window>

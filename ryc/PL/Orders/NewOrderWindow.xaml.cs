@@ -1,4 +1,5 @@
 ﻿using PL.Products;
+using BO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using PL.Carts;
+using System.Collections.ObjectModel;
 
 namespace PL.Orders
 {
@@ -20,16 +23,38 @@ namespace PL.Orders
     /// </summary>
     public partial class NewOrderWindow : Window
     {
-        BlApi.IBL? bl = BlApi.Factory.Get();
+        readonly BlApi.IBL? bl = BlApi.Factory.Get();
+
+        public static readonly DependencyProperty CartDependency = DependencyProperty.Register(nameof(Cart), typeof(BO.Cart), typeof(Window), new PropertyMetadata(null));
+        public BO.Cart Cart
+        {
+            get { return (BO.Cart)GetValue(CartDependency); }
+            set { SetValue(CartDependency, value); }
+        }
+
+        public ObservableCollection<BO.ProductItem> ProductItems
+        {
+            get { return (ObservableCollection<ProductItem>)GetValue(ProductItemsProperty); }
+            set { SetValue(ProductItemsProperty, value); }
+        }
+
+        public static readonly DependencyProperty ProductItemsProperty = DependencyProperty.Register("ProductItems", typeof(ObservableCollection<BO.ProductItem>), typeof(Window), new PropertyMetadata(null));
+
         public NewOrderWindow()
         {
             InitializeComponent();
-            DataContext = bl?.Product.GetAll().Select(pI => {
-                BO.Product p = bl?.Product.Get((int)pI?.ID!)!;
-                if(p.InStock != 0)
-                   return new BO.ProductItem() { ID = (int)p?.ID!, Name = p.Name, Category = p.Category, Price = p.Price, Amount = 0, InStock = true };
-                return null;
-            });
+            Cart = new() { Items = new() };
+            IEnumerable<BO.ProductItem?>? productItems = bl?.Product.GetAllPI();
+            ProductItems = (productItems == null) ? new() : new(productItems!);
+            ProductCategoriesSelector.ItemsSource = Enum.GetValues(typeof(BO.Enums.Category));
+        }
+
+        public NewOrderWindow(BO.Cart c)
+        {
+            InitializeComponent();
+            Cart = c;
+            IEnumerable<BO.ProductItem?>? productItems = bl?.Product.GetAllPI();
+            ProductItems = (productItems == null) ? new() : new(productItems!);
             ProductCategoriesSelector.ItemsSource = Enum.GetValues(typeof(BO.Enums.Category));
         }
 
@@ -37,26 +62,60 @@ namespace PL.Orders
         {
             var s = sender as ComboBox;
             if (ProductCategoriesSelector.SelectedItem.ToString() == "NONE")
-                ProductItemsView.ItemsSource = bl?.Product.GetAll().Select(pI => {
-                    BO.Product p = bl?.Product.Get((int)pI?.ID!)!;
-                    return new BO.ProductItem() { ID = (int)p?.ID!, Name = p.Name, Category = p.Category, Price = p.Price, Amount = 0, InStock = p.InStock == 0 ? false : true };
-                });
+            {
+                var temp = bl?.Product.GetAllPI();
+                ProductItems = (temp == null) ? new() : new(temp!);
+            }
             else
-                ProductItemsView.ItemsSource = bl?.Product.GetAll(p => p?.Category == (BO.Enums.Category)s!.SelectedIndex).Select(pI => {
-                    BO.Product p = bl?.Product.Get((int)pI?.ID!)!;
-                    return new BO.ProductItem() { ID = (int)p?.ID!, Name = p.Name, Category = p.Category, Price = p.Price, Amount = 0, InStock = p.InStock == 0 ? false : true };
-                });
+            {
+                var temp = bl?.Product.GetAllPI(p => p?.Category == (BO.Enums.Category)s!.SelectedIndex);
+                ProductItems = (temp == null) ? new() : new(temp!);
+            }
         }
 
         private void ProductItemsView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             ListView l = (ListView)sender;
-            new ProductWindow((BO.ProductItem)l.SelectedItem).ShowDialog();
+            new ProductItemWindow((BO.ProductItem)l.SelectedItem, Cart).ShowDialog();
+            IEnumerable<BO.ProductItem?>? productItems = bl?.Product.GetAllPI();
+            ProductItems = (productItems == null) ? new() : new(productItems!);
+        }
+        private void ViewProductItemWindow(object sender, RoutedEventArgs e)
+        {
+            BO.ProductItem? p = ((Button)sender).DataContext as BO.ProductItem;
+            new ProductItemWindow(p!, Cart).ShowDialog();
+            IEnumerable<BO.ProductItem?>? productItems = bl?.Product.GetAllPI();
+            ProductItems = (productItems == null) ? new() : new(productItems!);
+            Close();
+        }
+
+        private void PopularProduct_Click(object sender, RoutedEventArgs e)
+        {
+            if ((string)((Button)sender).Content == "Popular Product")
+            {
+                try
+                {
+                    IEnumerable<BO.ProductItem?>? temp = bl?.Product.GetAllPopularProducts();
+                    ProductItems = (temp == null) ? new() : new(temp!);
+                    ((Button)sender).Content = "All product items";
+                }
+                catch (BO.InvalidID ex)
+                {
+                    MessageBox.Show(ex.InnerException?.ToString(), ex.Message, MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            else
+            {
+                IEnumerable<BO.ProductItem?> temp = bl?.Product.GetAllPI()!;
+                ProductItems = (temp == null) ? new() : new(temp!);
+                ((Button)sender).Content = "Popular Product";
+            }
         }
 
         private void ConfirmOrderButton_Click(object sender, RoutedEventArgs e)
         {
-
+            new CartWindow(Cart).Show();
+            Close();
         }
     }
 }

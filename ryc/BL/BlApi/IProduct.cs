@@ -10,6 +10,8 @@ namespace BlApi
     public interface IProduct
     {
         public IEnumerable<ProductForList?> GetAll(Func<ProductForList?, bool>? func = null);
+        public IEnumerable<ProductItem?> GetAllPI(Func<ProductItem?, bool>? func = null);
+        public IEnumerable<ProductItem?> GetAllPopularProducts();
         public Product Get(int ID);
         public ProductItem Get(int ID, Cart cart);
         public void Add(Product p);

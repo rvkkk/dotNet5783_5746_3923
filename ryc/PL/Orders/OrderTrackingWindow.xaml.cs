@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BO;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,21 +18,29 @@ namespace PL.Orders
     /// <summary>
     /// Interaction logic for OrderTrcaking.xaml
     /// </summary>
-    public partial class OrderTracking : Window
+    public partial class OrderTrackingWindow : Window
     {
-        BlApi.IBL? bl = BlApi.Factory.Get();
-        public OrderTracking(BO.Order o)
+        readonly BlApi.IBL? bl = BlApi.Factory.Get();
+        public OrderTracking OrderTracking
+        {
+            get => (OrderTracking)GetValue(oTDependency);
+            private set => SetValue(oTDependency, value);
+        }
+        public static readonly DependencyProperty oTDependency = DependencyProperty.Register("OrderTracking", typeof(OrderTracking), typeof(Window), new PropertyMetadata(null));
+
+        public OrderTrackingWindow(OrderTracking oT)
         {
             InitializeComponent();
-            BO.OrderTracking oT = bl?.Order.OrderTracking(o.ID)!;
-            tbOrderID.Text = oT.ID.ToString();
-            tbOrderStatus.Text = oT.Status.ToString();
-            OrderTrackingListLV.ItemsSource = oT.list;
+            OrderTracking = oT;
         }
 
         private void ViewOrderButton_Click(object sender, RoutedEventArgs e)
         {
-            new OrderWindow(bl?.Order.Get(int.Parse(tbOrderID.Text))!, 1).ShowDialog();
+            try
+            {
+                new OrderWindow(bl?.Order.Get(OrderTracking.ID)!, "customer").ShowDialog();
+            }
+            catch (Exception ex) { MessageBox.Show(ex.InnerException?.ToString(), ex.Message, MessageBoxButton.OK, MessageBoxImage.Error); }
         }
     }
 }

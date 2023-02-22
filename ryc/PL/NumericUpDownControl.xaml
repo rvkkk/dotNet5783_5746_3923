@@ -1,0 +1,26 @@
+﻿<UserControl x:Class="PL.NumericUpDownControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:PL"
+             mc:Ignorable="d" 
+             d:DesignHeight="50" d:DesignWidth="80">
+    <Grid>
+        <StackPanel Orientation="Horizontal">
+            <TextBox x:Name="Numeric_TextBox" d:Text="0" Height="45" Width="24" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <RepeatButton x:Name="IncreaseButton" Grid.Row="0" Width="20" Margin="0,1,0,0" Click="increaseButton_Click">
+                    <Path Margin="1" Data="M 0 20 L 35 -20 L 70 20 Z" Fill="#FF202020" Stretch="Uniform" />
+                </RepeatButton>
+                <RepeatButton x:Name="DecreaseButton" Grid.Row="1" Width="20" Margin="0, 0, 2, 1" Click="decreaseButton_Click">
+                    <Path Margin="1" Data="M 0 0 L 35 40 L 70 0 Z" Fill="#FF202020" Stretch="Uniform" />
+                </RepeatButton>
+            </Grid>
+        </StackPanel>
+    </Grid>
+</UserControl>

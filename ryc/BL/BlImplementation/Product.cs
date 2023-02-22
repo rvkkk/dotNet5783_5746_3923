@@ -23,11 +23,12 @@ namespace BlImplementation
         /// </summary>
         /// <param name="func">a recived function</param>
         /// <returns>list of the products according to the function</returns>
-        public IEnumerable<BO.ProductForList?> GetAll(Func<BO.ProductForList?, bool>? func = null)
+        public IEnumerable<ProductForList?> GetAll(Func<ProductForList?, bool>? func = null)
         {
-            IEnumerable<BO.ProductForList?> lproducts;
+            IEnumerable<ProductForList?> lproducts;
             lproducts = from DO.Product? product in dal!.Product.GetAll()
-                        select new BO.ProductForList() { ID = (int)product?.ID!, Name = product?.Name, Category = (BO.Enums.Category)Enum.Parse(typeof(DO.Enums.Category), product?.Category.ToString()!), Price = (double)product?.Price! };
+                        orderby product?.Name
+                        select new ProductForList() { ID = (int)product?.ID!, Name = product?.Name, Category = (BO.Enums.Category)Enum.Parse(typeof(DO.Enums.Category), product?.Category.ToString()!), Price = (double)product?.Price! };
             return func is null ? lproducts : lproducts.Where(func);
         }
 
@@ -36,17 +37,35 @@ namespace BlImplementation
         /// </summary>
         /// <param name="func">a recived function</param>
         /// <returns>list of the products according to the function</returns>
-        public IEnumerable<ProductItem?> GetAllPI(Func<BO.ProductItem?, bool>? func = null)
+        public IEnumerable<ProductItem?> GetAllPI(Func<ProductItem?, bool>? func = null)
         {
 
             IEnumerable<ProductItem?> items;
-            items = dal!.Product.GetAll().Select(pI => {
-                DO.Product p = dal!.Product.Get((int)pI?.ID!);
-                if (p.InStock != 0)
-                    return new ProductItem() { ID = p.ID, Name = p.Name, Category = (BO.Enums.Category)Enum.Parse(typeof(DO.Enums.Category), p.Category.ToString()!), Price = p.Price, Amount = 0, InStock = true };
-                return null;
+            items = dal!.Product.GetAll().Select(pI =>
+            {
+                return new ProductItem() { ID = (int)pI?.ID!, Name = pI?.Name, Category = (BO.Enums.Category)Enum.Parse(typeof(DO.Enums.Category), pI?.Category.ToString()!), Price = (double)pI?.Price!, Amount = 0, InStock = pI?.InStock != 0 };
             });
             return func is null ? items : items.Where(func);
+        }
+
+        /// <summary>
+        /// returns all the popular product items
+        /// </summary>
+        /// <returns>list of the popular products</returns>
+        public IEnumerable<ProductItem?> GetAllPopularProducts()
+        {
+            var popularItems = from orderItem in dal!.OrderItem.GetAll()
+                               group orderItem by orderItem?.ProductID into orderItemGroup
+                               select new { ID = orderItemGroup.Key, Items = orderItemGroup };
+            popularItems = popularItems.OrderByDescending(p => p.Items.Count());
+            try
+            {
+                var popularProducts = from popularItem in popularItems
+                                      let p = dal.Product.GetByF(p => p?.ID == popularItem?.ID)
+                                      select new ProductItem() { ID = p.ID, Name = p.Name, Category = (BO.Enums.Category)Enum.Parse(typeof(DO.Enums.Category), p.Category.ToString()!), Price = p.Price, Amount = 0, InStock = p.InStock != 0 };
+                return popularProducts;
+            }
+            catch (DO.InvalidID ex) { throw new DalException("error in getting a product", ex); }
         }
 
         /// <summary>
@@ -66,7 +85,7 @@ namespace BlImplementation
                 BO.Product pB = new BO.Product() { ID = pD.ID, Name = pD.Name, Category = (BO.Enums.Category)Enum.Parse(typeof(DO.Enums.Category), pD.Category.ToString()!), Price = pD.Price, InStock = pD.InStock };
                 return pB;
             }
-            catch (Exception ex) { throw new DalException("error in getting a product", ex); }
+            catch (DO.InvalidID ex) { throw new DalException("error in getting a product", ex); }
         }
 
         /// <summary>

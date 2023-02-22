@@ -1,0 +1,14 @@
+﻿<Window x:Class="PL.Orders.ChooseOrderWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PL.Orders"
+        mc:Ignorable="d"
+        Title="ChooseOrderWindow" Height="300" Width="500">
+    <Grid Background="#FF565553">
+        <TextBlock HorizontalAlignment="Center" Margin="0,50,0,0" TextWrapping="Wrap" Foreground="#FFED3619" Text="insert an order ID:" VerticalAlignment="Top" FontWeight="Bold" FontSize="18"/>
+        <TextBox x:Name="tbOrderID" MaxLength="6" HorizontalAlignment="Center" Margin="0,97,0,0" TextWrapping="Wrap" Foreground="#FFED3619" Text="" VerticalAlignment="Top" Width="120" PreviewKeyDown="InsertOnlyNumbers_PreviewKeyDown"/>
+        <Button Content="view order tracking" HorizontalAlignment="Center" Margin="0,165,0,0" VerticalAlignment="Top" Height="40" Width="140" Click="ViewOrderTracking" Background="#FFED3619" Foreground="#FFFBF5F5" BorderBrush="#FFFBF5F5" RenderTransformOrigin="0.568,-0.478" FontWeight="Bold" FontSize="14"/>
+    </Grid>
+</Window>

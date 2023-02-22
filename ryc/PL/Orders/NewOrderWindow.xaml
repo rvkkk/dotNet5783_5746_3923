@@ -3,32 +3,57 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        DataContext="{Binding ProductItems, RelativeSource={RelativeSource Self} }"
         xmlns:local="clr-namespace:PL.Orders"
         mc:Ignorable="d"
         Title="NewOrderWindow" Height="640" Width="800">
     <Window.Resources>
-        <DataTemplate x:Key="myProductsList" DataType="local:bl?.Product.GetAll()">
-            <Grid>
+        <DataTemplate x:Key="myProductsList" DataType="local:bl?.Product.GetAllPI()">
+            <Grid Width="700" Background="White">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="{Binding Path=Name}" Width="100" Margin="10"/>
-                <TextBox Grid.Column="1" Text="{Binding Path=Price}" Width="100" Margin="10"/>
-				<TextBox Grid.Column="2" Text="{Binding Path=Amount}" Width="100" Margin="10"/>
-				<Button Grid.Column="3" Content="view Product" Margin="10"/>
+                <TextBlock Grid.Row="0" Grid.Column="0" Text=" Name: " />
+                <TextBlock Grid.Row="1" Grid.Column="0" Text=" Price: " />
+                <TextBlock Grid.Row="2" Grid.Column="0" Text=" Category: " />
+                <TextBlock Grid.Row="3" Grid.Column="0" Text=" In stock: " />
+                <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Name}" />
+                <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Price}" />
+                <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding Category}" />
+                <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding InStock}" />
+                <Button Grid.Column="2" Grid.RowSpan="5" Content="view Product" Click="ViewProductItemWindow" HorizontalAlignment="Center"/>
             </Grid>
         </DataTemplate>
+        <Style TargetType="TextBlock">
+            <Setter Property="Width" Value="100" />
+            <Setter Property="Margin" Value="10" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="TextAlignment" Value="Center" />
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Width" Value="150" />
+            <Setter Property="Height" Value="60" />
+            <Setter Property="FontSize" Value="18" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="Foreground" Value="#FFFBF5F5" />
+            <Setter Property="Background" Value="#FFED3619" />
+            <Setter Property="BorderBrush" Value="#FFFBF5F5" />
+        </Style>
     </Window.Resources>
-    <Grid Name="MainGrid" Background="#FF565553">
+    <Grid Background="#FF565553">
         <Grid.RowDefinitions>
-            <RowDefinition Height="40*"/>
-            <RowDefinition Height="500*"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid Name="UpGrid" HorizontalAlignment="Stretch" Height="auto" Grid.Row="0" VerticalAlignment="Stretch" Width="auto">
@@ -37,9 +62,10 @@
                 <ColumnDefinition Width="373*"/>
             </Grid.ColumnDefinitions >
             <Label x:Name="ProductCategoryLabel" Content="Category:" Grid.Column="0" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" FontSize="24" FontWeight="Bold" Foreground="#FFFBF5F5"/>
-            <ComboBox x:Name="ProductCategoriesSelector" Grid.Column="1" FontSize="20" FontWeight="Bold" SelectionChanged="ProductCategoriesSelector_SelectionChanged" Foreground="#FF565553" Grid.ColumnSpan="2"/>
+            <ComboBox x:Name="ProductCategoriesSelector" Grid.Column="1" FontSize="20" FontWeight="Bold" SelectionChanged="ProductCategoriesSelector_SelectionChanged" Foreground="#FF565553"/>
         </Grid>
         <ListView ItemsSource="{Binding}" ItemTemplate="{StaticResource myProductsList}" Background="#FF565553" Foreground="#FFED3619" x:Name="ProductItemsView" Grid.Row="1" FontSize="16" MouseDoubleClick="ProductItemsView_MouseDoubleClick" BorderBrush="#FFFBF5F5"/>
-        <Button Content="confirm order" Grid.Row="2" HorizontalAlignment="Center" Margin="5" Padding="5" Click="ConfirmOrderButton_Click" FontWeight="Bold" Background="#FFED3619" Foreground="#FFFBF5F5" BorderBrush="#FFFBF5F5"/>
+        <Button Content="confirm order" Grid.Row="2" Margin="450,5,0,5" Click="ConfirmOrderButton_Click" />
+        <Button Content="Popular Product" Grid.Row="2" Margin="200,5,0,5" Click="PopularProduct_Click" />
     </Grid>
 </Window>

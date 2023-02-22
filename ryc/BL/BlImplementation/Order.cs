@@ -178,11 +178,11 @@ namespace BlImplementation
         /// updates the amount of product in order
         /// </summary>
         /// <param name="ID">recived order id</param>
-        /// <param name="product">recived product id</param>
+        /// <param name="productID">recived product id</param>
         /// <param name="amount">recived amount</param>
         /// <returns>the updated order</returns>
         /// <exception cref="DalException">exception from dal</exception>
-        public BO.Order ManagerUpdate(int ID, int product, int amount)
+        public BO.Order ManagerUpdate(int ID, int productID, int amount)
         {
             DO.Order oD;
             try
@@ -195,24 +195,41 @@ namespace BlImplementation
             DO.OrderItem item;
             try
             {
-                item = dal.OrderItem.GetByF((DO.OrderItem? orderItem) => { return orderItem?.OrderID == ID && orderItem?.ProductID == product; });
+                item = dal.OrderItem.GetByF((DO.OrderItem? orderItem) => { return orderItem?.OrderID == ID && orderItem?.ProductID == productID; });
+                if (amount > 0)
+                {
+                    item.Amount = amount;
+                    try
+                    {
+                        dal.OrderItem.Update(item);
+                    }
+                    catch (Exception ex) { throw new DalException("error in updating an item", ex); }
+                }
+                else
+                {
+                    try
+                    {
+                        dal.OrderItem.Delete(item.ID);
+                    }
+                    catch (Exception ex) { throw new DalException("error in deleting an item", ex); }
+                }
             }
-            catch (DO.InvalidID ex) { throw new DalException("error in getting an item in order", ex); }
-            item.Amount = amount;
-            try
+            catch (DO.InvalidID) 
             {
-                dal.OrderItem.Update(item);
+                DO.Product p = dal.Product.Get(productID);
+                item = new DO.OrderItem() { OrderID = ID, ProductID = productID, Price = p.Price, Amount = amount };
+                dal.OrderItem.Add(item);
             }
-            catch (Exception ex) { throw new DalException("error in updating an item", ex); }
             IEnumerable<BO.OrderItem?> lItems;
             try
             {
                 lItems = from orderItem in dal!.OrderItem.GetAll(orderItem => orderItem?.OrderID == ID)
+                         let p = dal!.Product.Get((int)orderItem?.ProductID!)
                          select new BO.OrderItem
                          {
                              ID = (int)orderItem?.ID!,
                              ProductID = orderItem?.ProductID ?? 0,
-                             ProductName = dal!.Product.Get((int)orderItem?.ProductID!).Name,
+                             ProductName = p.Name,
                              ProductPrice = orderItem?.Price ?? 0,
                              Amount = orderItem?.Amount ?? 0,
                              TotalPrice = orderItem?.Price * orderItem?.Amount ?? 0
@@ -250,7 +267,7 @@ namespace BlImplementation
                 lOrderT.Add(new Tuple<DateTime?, string?>(oD.DeliveryDate, "The order has been delivered"));
                 oStatus = BO.Enums.OrderStatus.DeliveredToCustomer;
             }
-            BO.OrderTracking orderTracking = new BO.OrderTracking() { ID = ID, Status = oStatus, list = lOrderT };
+            BO.OrderTracking orderTracking = new BO.OrderTracking() { ID = ID, Status = oStatus, List = lOrderT };
             return orderTracking;
         }
     }

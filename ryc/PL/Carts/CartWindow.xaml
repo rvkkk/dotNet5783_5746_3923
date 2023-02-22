@@ -3,10 +3,78 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        DataContext="{Binding CartItems, RelativeSource={RelativeSource Self} }"
         xmlns:local="clr-namespace:PL.Carts"
         mc:Ignorable="d"
-        Title="CartWindow" Height="450" Width="800">
-    <Grid>
-        
+        Title="CartWindow" Height="640" Width="800">
+    <Window.Resources>
+        <Style TargetType="Button">
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Height" Value="60" />
+            <Setter Property="Width" Value="170" />
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="Foreground" Value="#FFFBF5F5" />
+            <Setter Property="Background" Value="#FFED3619" />
+            <Setter Property="BorderBrush" Value="#FFFBF5F5" />
+        </Style>
+    </Window.Resources>
+
+    <Grid Background="#FF565553">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="100"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="200"/>
+        </Grid.RowDefinitions>
+        <Label Content="YOUR CART" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Top" RenderTransformOrigin="0.528,1.532" Margin="0,33,0,0" Foreground="#FFED3619" FontWeight="Bold" FontSize="28"/>
+        <ListView ItemsSource="{Binding }" Grid.Row="1" Background="White" Foreground="#FF565553" Margin="40,0,40,0" Width="760" >
+            <ListView.View>
+                <GridView AllowsColumnReorder="true">
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=ProductID, Mode=TwoWay}" Header="ID"  Width="100"/>
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=ProductName, Mode=TwoWay}" Header="Name" Width="100"/>
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=ProductPrice, Mode=TwoWay}" Header="Price" Width="100"/>
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=Amount, Mode=TwoWay}"  Header="Amount" Width="100"/>
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=TotalPrice , Mode=TwoWay}" Header="TotalPrice" Width="100"/>
+                    <GridViewColumn Header="Update Amount" Width="100" >
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Grid >
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="1.5*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <RepeatButton Grid.Column="0" Height="20" Width="20" VerticalContentAlignment="Center" Click="Btn_decrease_Click" >
+                                        <Path Margin="1" Data="M 0 0 L 35 40 L 70 0 Z" Fill="#FF202020" Stretch="Uniform"></Path>
+                                    </RepeatButton>
+                                    <TextBox Grid.Column="1" Height="20" Width="25" TextWrapping="Wrap" TextAlignment="Center" Margin="3,0,3,0" VerticalContentAlignment="Center" Text="{Binding Path=Amount, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
+                                    <RepeatButton Grid.Column="2" Height="20"  Width="20" VerticalContentAlignment="Center" Click="Btn_increase_Click" >
+                                        <Path Data="M 0 20 L 35 -20 L 70 20 Z" Fill="#FF202020" Stretch="Uniform"></Path>
+                                    </RepeatButton>
+                                </Grid>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Delete Product" Width="100" >
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button HorizontalContentAlignment="Center" Content="🗑️" Height="25" Width="30" HorizontalAlignment="Center" Click="RemoveFromCart_Click" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <Grid Grid.Row="2">
+            <TextBlock Text="Total Price:" Visibility="{Binding Count, Converter={StaticResource ConvertZeroToHidden}}" Width="160" Height="50" Margin="0,34,0,0" FontSize="20" FontWeight="Bold" VerticalAlignment="Top" HorizontalAlignment="Center" Foreground="#FFFBF5F5"/>
+            <TextBlock x:Name="tBtotalPrice" Visibility="{Binding Count, Converter={StaticResource ConvertZeroToHidden}}" Width="160" Height="50" Margin="0,34,185,0" FontSize="20" FontWeight="Bold" VerticalAlignment="Top" HorizontalAlignment="Right" Foreground="#FFFBF5F5"/>
+            <TextBlock Visibility="{Binding Count, Converter={StaticResource ConvertZeroToVisible}}" Text="your cart is still empty" Margin="0,-235,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="35" />
+            <TextBlock Visibility="{Binding Count, Converter={StaticResource ConvertZeroToVisible}}" Text="🛒" Foreground="#FFED3619" FontSize="100" Margin="324,-183,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <Button Content="confirm order" IsEnabled="{Binding Count, Converter={StaticResource ConvertZeroToFalse}}" Click="ConfirmOrderBtn_Click" Margin="0,93,0,0" VerticalAlignment="Top" HorizontalAlignment="Center" />
+            <Button Content="empty cart" IsEnabled="{Binding Count, Converter={StaticResource ConvertZeroToFalse}}" Click="EmptyCartBtn_Click" Margin="77,93,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" />
+            <Button Content=" ➜ " HorizontalAlignment="Left" Margin="557,93,0,0" Click="ReturnToCatalog_Click" VerticalAlignment="Top" RenderTransformOrigin="0.319,0.587"/>
+        </Grid>
     </Grid>
 </Window>
+

@@ -1,6 +1,4 @@
-﻿using BlApi;
-using BlImplementation;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,21 +10,29 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace PL.Carts
+namespace PL
 {
     /// <summary>
-    /// Interaction logic for CartsListWindow.xaml
+    /// Interaction logic for NumericUpDownControl.xaml
     /// </summary>
-    public partial class CartsListWindow : Window
+    public partial class NumericUpDownControl : UserControl
     {
-        BlApi.IBL? bl = BlApi.Factory.Get();
-
-        public CartsListWindow()
+        public NumericUpDownControl()
         {
             InitializeComponent();
-            //CartsListView.ItemsSource = 
+        }
+
+        private void decreaseButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void increaseButton_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

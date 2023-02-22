@@ -1,5 +1,7 @@
-﻿using System;
+﻿using BO;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,11 +21,22 @@ namespace PL.Products
     /// </summary>
     public partial class ProductListWindow : Window
     {
-        BlApi.IBL? bl = BlApi.Factory.Get();
+        readonly BlApi.IBL? bl = BlApi.Factory.Get();
+
+        public ObservableCollection<BO.ProductForList?> Products
+        {
+            get { return (ObservableCollection<BO.ProductForList?>)GetValue(ProductsProperty); }
+            set { SetValue(ProductsProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for products.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ProductsProperty = DependencyProperty.Register("Products", typeof(ObservableCollection<BO.ProductForList?>), typeof(Window), new PropertyMetadata(null));
+
         public ProductListWindow()
         {
             InitializeComponent();
-            DataContext = bl?.Product.GetAll();
+            var temp = bl?.Product.GetAll();
+            Products = (temp == null) ? new() : new(temp);
             ProductCategoriesSelector.ItemsSource = Enum.GetValues(typeof(BO.Enums.Category));
         }
 
@@ -31,24 +44,50 @@ namespace PL.Products
         {
             var s = sender as ComboBox;
             if (ProductCategoriesSelector.SelectedItem.ToString() == "NONE")
-                ProductsListView.ItemsSource = bl?.Product.GetAll();
+            {
+                var temp = bl?.Product.GetAll();
+                Products = (temp == null) ? new() : new(temp);
+            }
             else
-                ProductsListView.ItemsSource = bl?.Product.GetAll((BO.ProductForList? p) => p?.Category == (BO.Enums.Category)s!.SelectedIndex);
+            {
+                var temp = bl?.Product.GetAll((BO.ProductForList? p) => p?.Category == (BO.Enums.Category)s!.SelectedIndex);
+                Products = (temp == null) ? new() : new(temp);
+            }
         }
 
         private void AddProductButton_Click(object sender, RoutedEventArgs e)
         {
             new ProductWindow().ShowDialog();
-            ProductsListView.ItemsSource = bl?.Product.GetAll();
+            var temp = bl?.Product.GetAll();
+            Products = (temp == null) ? new() : new(temp);
         }
 
         private void ViewProductWindow(object sender, MouseButtonEventArgs e)
         {
-            ListView l = (ListView)sender;
-            BO.ProductForList pL = (BO.ProductForList)l.SelectedItem;
-            BO.Product p = bl?.Product.Get(pL.ID)!;
-            new ProductWindow(p).ShowDialog();
-            ProductsListView.ItemsSource = bl?.Product.GetAll();
+            try
+            {
+                ListView l = (ListView)sender;
+                BO.ProductForList pL = (BO.ProductForList)l.SelectedItem;
+                BO.Product p = bl?.Product.Get(pL.ID)!;
+                new ProductWindow(p).ShowDialog();
+                var temp = bl?.Product.GetAll();
+                Products = (temp == null) ? new() : new(temp);
+
+            }
+            catch (InvalidID ex) { MessageBox.Show(ex.InnerException?.ToString(), ex.Message, MessageBoxButton.OK, MessageBoxImage.Error); }
+        }
+
+        private void ViewProductWindowButton(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                BO.ProductForList? pL = ((Button)sender).DataContext as BO.ProductForList;
+                BO.Product p = bl?.Product.Get((int)pL?.ID!)!;
+                new ProductWindow(p).ShowDialog();
+                var temp = bl?.Product.GetAll();
+                Products = (temp == null) ? new() : new(temp);
+            }
+            catch (InvalidID ex) { MessageBox.Show(ex.InnerException?.ToString(), ex.Message, MessageBoxButton.OK, MessageBoxImage.Error); }
         }
     }
 }

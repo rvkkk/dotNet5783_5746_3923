@@ -6,6 +6,7 @@ using PL.Products;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -43,7 +44,7 @@ namespace PL
 
         private void ShowOrdersTrackingButton_click(object sender, RoutedEventArgs e)
         {
-           // new orderTrackingWindow().Show();
+           new ChooseOrderWindow().Show();
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using BO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using static BO.Enums;
+using BlApi;
+using System.Windows.Controls.Primitives;
 
 namespace PL.Orders
 {
@@ -19,74 +23,94 @@ namespace PL.Orders
     /// </summary>
     public partial class OrderWindow : Window
     {
-        BlApi.IBL? bl = BlApi.Factory.Get();
+        readonly BlApi.IBL? bl = BlApi.Factory.Get();
+        readonly string person;
 
-        public OrderWindow()
+        public Order? OrderDetails
         {
-            InitializeComponent();
+            get { return (Order?)GetValue(OrderDP); }
+            set { SetValue(OrderDP, value); }
         }
 
-        public OrderWindow(BO.Order o)
+        // Using a DependencyProperty as the backing store for OrderData.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty OrderDP = DependencyProperty.Register("OrderDetails", typeof(Order), typeof(Window), new PropertyMetadata(null));
+
+        public OrderWindow(Order o)
         {
             InitializeComponent();
-            tbOrderID.Text = o.ID.ToString();
-            tbOrderCustomerN.Text = o.CustomerName!.ToString();
-            tbOrderCustomerA.Text = o.CustomerAddress!.ToString();
-            tbOrderCustomerE.Text = o.CustomerEmail!.ToString();
-            tbOrderDate.Text = o.OrderDate.ToString();
-            tbOrderShipDate.Text = o.ShipDate!.ToString();
-            tbOrderDeliveryDate.Text = o.DeliveryDate!.ToString();
-            tbOrderStatus.Text = o.Status.ToString();
-            tbOrderTotalPrice.Text = o.TotalPrice.ToString();
+            OrderDetails = o;
+            person = "manager";
         }
 
-        public OrderWindow(BO.Order o, int n)
+        public OrderWindow(Order o, string customer)
         {
             InitializeComponent();
-            tbOrderID.Text = o.ID.ToString();
-            tbOrderID.IsEnabled = false;
-            tbOrderCustomerN.Text = o.CustomerName!.ToString();
-            tbOrderCustomerN.IsEnabled = false;
-            tbOrderCustomerA.Text = o.CustomerAddress!.ToString();
-            tbOrderCustomerA.IsEnabled = false;
-            tbOrderCustomerE.Text = o.CustomerEmail!.ToString();
-            tbOrderCustomerE.IsEnabled = false;
-            tbOrderDate.Text = o.OrderDate.ToString();
-            tbOrderDate.IsEnabled = false;
-            tbOrderShipDate.Text = o.ShipDate?.ToString();
-            tbOrderShipDate.IsEnabled = false;
-            tbOrderDeliveryDate.Text = o.DeliveryDate?.ToString();
-            tbOrderDeliveryDate.IsEnabled = false;
-            tbOrderStatus.Text = o.Status.ToString();
-            tbOrderStatus.IsEnabled = false;
-            tbOrderTotalPrice.Text = o.TotalPrice.ToString();
-            tbOrderTotalPrice.IsEnabled = false;
-            ShipUpdateButton.Visibility = Visibility.Hidden;
-            DeliveryUpdateButton.Visibility = Visibility.Hidden;
+            OrderDetails = o;
+            person = customer;
+            UpdateStatusButton.Visibility = Visibility.Hidden;
         }
 
-        private void ShipUpdateButton_Click(object sender, RoutedEventArgs e)
+        private void UpdateStatusBtn_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                bl?.Order.ShipUpdate(int.Parse(tbOrderID.Text));
-                BO.Order? o = bl?.Order.Get(int.Parse(tbOrderID.Text));
-                tbOrderShipDate.Text = o?.ShipDate.ToString();
-                tbOrderStatus.Text = o?.Status.ToString();
+                if (OrderDetails?.Status == OrderStatus.OrderConfirmed)
+                {
+                    OrderDetails = bl?.Order.ShipUpdate((int)OrderDetails?.ID!);
+                }
+                else if (OrderDetails?.Status == OrderStatus.Shipped)
+                {
+                    OrderDetails = bl?.Order.DeliveryUpdate((int)OrderDetails?.ID!);
+                }
+                Close();
             }
-            catch { MessageBox.Show("you alredy shipped the order"); }
+            catch (Exception ex) { MessageBox.Show(ex.InnerException?.ToString(), ex.Message, MessageBoxButton.OK, MessageBoxImage.Error); }
         }
 
-        private void DeliveryUpdateButton_Click(object sender, RoutedEventArgs e)
+        private void Btn_increase_Click(object sender, RoutedEventArgs e)
+        {
+            if (person == "manager")
+                try
+                {
+                    int ID = ((OrderItem)((RepeatButton)sender).DataContext).ProductID;
+                    int amountInstock = bl?.Product.Get(ID).InStock ?? 0;
+                    int amount = ((OrderItem)((RepeatButton)sender).DataContext).Amount;
+                    if (amount < amountInstock)
+                    {
+                        OrderDetails = bl?.Order.ManagerUpdate(OrderDetails!.ID, ID, amount + 1)!;
+                    }
+                }
+                catch (Exception ex) { MessageBox.Show(ex.InnerException?.ToString(), ex.Message, MessageBoxButton.OK, MessageBoxImage.Error); }
+        }
+
+        private void Btn_decrease_Click(object sender, RoutedEventArgs e)
+        {
+            if (person == "manager")
+                try
+                {
+                    int ID = ((BO.OrderItem)((RepeatButton)sender).DataContext).ProductID;
+                    int amount = ((BO.OrderItem)((RepeatButton)sender).DataContext).Amount;
+                    if (amount != 1)
+                    {
+                        OrderDetails = bl?.Order.ManagerUpdate(OrderDetails!.ID, ID, amount - 1)!;
+                    }
+                }
+                catch (Exception ex) { MessageBox.Show(ex.InnerException?.ToString(), ex.Message, MessageBoxButton.OK, MessageBoxImage.Error); }
+        }
+
+        private void RemoveFromOrder_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                bl?.Order.DeliveryUpdate(int.Parse(tbOrderID.Text));
-                BO.Order? o = bl?.Order.Get(int.Parse(tbOrderID.Text));
-                tbOrderDeliveryDate.Text = o?.DeliveryDate.ToString();
-                tbOrderStatus.Text = o?.Status.ToString();
+                int ID = ((OrderItem)((Button)sender).DataContext).ProductID;
+                OrderDetails = bl?.Order.ManagerUpdate(OrderDetails!.ID, ID, 0)!;
             }
-            catch { MessageBox.Show("you haven't shipped the order yet"); }
+            catch (Exception ex) { MessageBox.Show(ex.InnerException?.ToString(), ex.Message, MessageBoxButton.OK, MessageBoxImage.Error); }
+        }
+
+        private void Return_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
         }
     }
 }
