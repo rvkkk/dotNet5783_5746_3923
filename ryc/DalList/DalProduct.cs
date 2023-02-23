@@ -64,9 +64,9 @@ internal class DalProduct : IProduct
     /// <param name="func">a delegate</param>
     /// <returns>product</returns>
     /// <exception cref="InvalidID">there in no such a product</exception>
-    public Product GetByF(Func<Product?, bool>? func)
+    public Product GetByF(Func<Product?, bool> func)
     {
-        return DataSource.lProduct.Where(func!).First() ??
+        return DataSource.lProduct.Where(func).First() ??
          throw new InvalidID("there in no such a product");
     }
 

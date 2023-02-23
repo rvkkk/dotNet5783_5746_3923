@@ -40,7 +40,8 @@ internal class DalOrderItem : IOrderItem
     /// <param name="o">recived orderItem</param>
     public void Update(OrderItem o)
     {
-        DataSource.lOrderItem[DataSource.lOrderItem.FindIndex(orderI => orderI?.ID == o.ID)] = o;
+        Delete(o.ID);
+        Add(o);
     }
 
     /// <summary>
@@ -61,9 +62,9 @@ internal class DalOrderItem : IOrderItem
     /// <param name="func">a delegate</param>
     /// <returns>orderItem</returns>
     /// <exception cref="InvalidID">there in no such an orderItem</exception>
-    public OrderItem GetByF(Func<OrderItem?, bool>? func)
+    public OrderItem GetByF(Func<OrderItem?, bool> func)
     {
-        return DataSource.lOrderItem.Where(func!).First() ??
+        return DataSource.lOrderItem.Where(func).First() ??
          throw new InvalidID("there in no such an order item");
     }
 

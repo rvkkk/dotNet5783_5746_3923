@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfProduct xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Product>
+    <ID>452687</ID>
+    <Name>burger 180g</Name>
+    <Category>BURGERS</Category>
+    <Price>58</Price>
+    <InStock>100</InStock>
+  </Product>
+  <Product>
+    <ID>747541</ID>
+    <Name>burger 250g</Name>
+    <Category>BURGERS</Category>
+    <Price>65</Price>
+    <InStock>50</InStock>
+  </Product>
+  <Product>
+    <ID>852374</ID>
+    <Name>angos burger</Name>
+    <Category>BURGERS</Category>
+    <Price>75</Price>
+    <InStock>30</InStock>
+  </Product>
+  <Product>
+    <ID>624857</ID>
+    <Name>coke</Name>
+    <Category>JUICES</Category>
+    <Price>10</Price>
+    <InStock>200</InStock>
+  </Product>
+  <Product>
+    <ID>458963</ID>
+    <Name>franch fries</Name>
+    <Category>EXTRAS</Category>
+    <Price>22</Price>
+    <InStock>200</InStock>
+  </Product>
+  <Product>
+    <ID>487562</ID>
+    <Name>orange juice</Name>
+    <Category>JUICES</Category>
+    <Price>10</Price>
+    <InStock>100</InStock>
+  </Product>
+  <Product>
+    <ID>745698</ID>
+    <Name>onion rings</Name>
+    <Category>EXTRAS</Category>
+    <Price>22</Price>
+    <InStock>200</InStock>
+  </Product>
+  <Product>
+    <ID>875462</ID>
+    <Name>schnitzel burger</Name>
+    <Category>BURGERS</Category>
+    <Price>52</Price>
+    <InStock>100</InStock>
+  </Product>
+  <Product>
+    <ID>147985</ID>
+    <Name>chocopay</Name>
+    <Category>DESSERTS</Category>
+    <Price>15</Price>
+    <InStock>200</InStock>
+  </Product>
+  <Product>
+    <ID>362874</ID>
+    <Name>ice cream</Name>
+    <Category>DESSERTS</Category>
+    <Price>4</Price>
+    <InStock>300</InStock>
+  </Product>
+  <Product>
+    <ID>654645</ID>
+    <Name>fghjkl</Name>
+    <Category>DESSERTS</Category>
+    <Price>5</Price>
+    <InStock>5</InStock>
+  </Product>
+</ArrayOfProduct>

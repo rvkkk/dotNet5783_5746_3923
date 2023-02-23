@@ -39,7 +39,8 @@ internal class DalOrder : IOrder
     /// <param name="o">recived order</param>
     public void Update(Order o)
     {
-        DataSource.lOrder[DataSource.lOrder.FindIndex(order => order?.ID == o.ID)] = o;
+        Delete(o.ID);
+        Add(o);
     }
 
     /// <summary>
@@ -60,9 +61,9 @@ internal class DalOrder : IOrder
     /// <param name="func">a delegate</param>
     /// <returns>order</returns>
     /// <exception cref="InvalidID">there in no such an order</exception>
-    public Order GetByF(Func<Order?, bool>? func)
+    public Order GetByF(Func<Order?, bool> func)
     {
-        return DataSource.lOrder.Where(func!).First() ??
+        return DataSource.lOrder.Where(func).First() ??
          throw new InvalidID("there in no such an order");
     }
 
