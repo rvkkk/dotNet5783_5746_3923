@@ -29,7 +29,7 @@ internal class DalOrder : IOrder
     /// <exception cref="Exception">there in no such an order id</exception>
     public void Delete(int ID)
     {
-        if (DataSource.lProduct.RemoveAll(p => p?.ID == ID) == 0)
+        if (DataSource.lOrder.RemoveAll(o => o?.ID == ID) == 0)
             throw new InvalidID("there in no such an id");
     }
 
@@ -39,8 +39,8 @@ internal class DalOrder : IOrder
     /// <param name="o">recived order</param>
     public void Update(Order o)
     {
-        Delete(o.ID);
-        Add(o);
+        DataSource.lProduct.RemoveAll(p => p?.ID == o.ID);
+        DataSource.lOrder.Add(o);
     }
 
     /// <summary>
@@ -63,7 +63,7 @@ internal class DalOrder : IOrder
     /// <exception cref="InvalidID">there in no such an order</exception>
     public Order GetByF(Func<Order?, bool> func)
     {
-        return DataSource.lOrder.Where(func).First() ??
+        return DataSource.lOrder.Where(func).FirstOrDefault() ??
          throw new InvalidID("there in no such an order");
     }
 

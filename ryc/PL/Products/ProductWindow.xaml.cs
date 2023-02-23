@@ -39,6 +39,7 @@ namespace PL.Products
             ProductCategoriesSelector.SelectedItem = "NONE";
             ProductButton.Content = "Add Product";
         }
+
         public ProductWindow(BO.Product p)
         {
             InitializeComponent();

@@ -29,7 +29,7 @@ namespace PL.Products
             set { SetValue(ProductsProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for products.  This enables animation, styling, binding, etc...
+        // Using a DependencyProperty as the backing store for products. This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ProductsProperty = DependencyProperty.Register("Products", typeof(ObservableCollection<BO.ProductForList?>), typeof(Window), new PropertyMetadata(null));
 
         public ProductListWindow()
@@ -72,7 +72,6 @@ namespace PL.Products
                 new ProductWindow(p).ShowDialog();
                 var temp = bl?.Product.GetAll();
                 Products = (temp == null) ? new() : new(temp);
-
             }
             catch (InvalidID ex) { MessageBox.Show(ex.InnerException?.ToString(), ex.Message, MessageBoxButton.OK, MessageBoxImage.Error); }
         }

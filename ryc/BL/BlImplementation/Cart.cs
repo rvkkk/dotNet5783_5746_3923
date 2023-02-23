@@ -14,7 +14,7 @@ namespace BlImplementation
 {
     internal class Cart : ICart
     {
-        DalApi.IDal? dal = DalApi.Factory.Get();
+        IDal? dal = DalApi.Factory.Get();
 
         /// <summary>
         /// adds product to cart
@@ -36,6 +36,7 @@ namespace BlImplementation
                     throw new LessAmount("there is no much amount of product in shop");
                 cart.Items?.Add(new BO.OrderItem() { ID = cart.Items.Count + 1, ProductID = ID, ProductName = product.Name, ProductPrice = product.Price, Amount = 1, TotalPrice = product.Price });
                 cart.TotalPrice += product.Price;
+                cart.Items?.OrderBy(item => item?.ID);
                 return cart;
             }
             catch (DO.InvalidID ex) { throw new DalException("error in getting a product", ex); }
@@ -72,6 +73,7 @@ namespace BlImplementation
                     item.TotalPrice = amount * item.ProductPrice;
                     cart.Items?.Add(item);
                     cart.TotalPrice = (double)cart.Items!.Sum(x => x?.TotalPrice ?? 0);
+                    cart.Items?.OrderBy(item => item?.ID);
                 }
                 return cart;
             }
@@ -92,7 +94,7 @@ namespace BlImplementation
                 throw new BO.InvalidInput("the customer email is empty");
             if (cart.CustomerAddress == "")
                 throw new BO.InvalidInput("the customer address is empty");
-            DO.Order order = new DO.Order() { CustomerName = cart.CustomerName, CustomerEmail = cart.CustomerEmail, CustomerAddress = cart.CustomerEmail, OrderDate = DateTime.Now, ShipDate = null, DeliveryDate = null };
+            DO.Order order = new DO.Order() { CustomerName = cart.CustomerName, CustomerEmail = cart.CustomerEmail, CustomerAddress = cart.CustomerAddress, OrderDate = DateTime.Now, ShipDate = null, DeliveryDate = null };
             int ID;
             try
             {
@@ -112,17 +114,6 @@ namespace BlImplementation
                 return ID;
             }
             catch (DO.InvalidID ex) { throw new DalException("error in getting a product", ex); }
-        }
-
-        public bool UpdateProduct(DO.Product p)
-        {
-            try
-            {
-                dal?.Product.Update(p);
-                return true;
-            }
-            catch (DO.AlreadyExists ex) { throw new DalException("error in updating a product", ex); }
-            catch (DO.InvalidID ex) { throw new DalException("error in updating a product", ex); }
         }
     }
 }

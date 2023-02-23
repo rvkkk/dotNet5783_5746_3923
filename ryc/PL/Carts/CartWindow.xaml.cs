@@ -106,8 +106,16 @@ namespace PL.Carts
 
         private void ReturnToCatalog_Click(object sender, RoutedEventArgs e)
         {
-            NewOrderWindow catalog = new(myCart!);
-            catalog.Show();
+            if (myCart != null)
+            {
+                NewOrderWindow catalog = new(myCart);
+                catalog.Show();
+            }
+            else
+            {
+                NewOrderWindow catalog = new();
+                catalog.Show();
+            }
             Close();
         }
     }

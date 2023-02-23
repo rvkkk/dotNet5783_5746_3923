@@ -42,5 +42,10 @@ namespace PL.Orders
             }
             catch (Exception ex) { MessageBox.Show(ex.InnerException?.ToString(), ex.Message, MessageBoxButton.OK, MessageBoxImage.Error); }
         }
+
+        private void Return_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
     }
 }

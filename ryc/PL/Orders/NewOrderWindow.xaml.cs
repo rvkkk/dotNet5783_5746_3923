@@ -24,13 +24,13 @@ namespace PL.Orders
     public partial class NewOrderWindow : Window
     {
         readonly BlApi.IBL? bl = BlApi.Factory.Get();
-
-        public static readonly DependencyProperty CartDependency = DependencyProperty.Register(nameof(Cart), typeof(BO.Cart), typeof(Window), new PropertyMetadata(null));
+      
         public BO.Cart Cart
         {
             get { return (BO.Cart)GetValue(CartDependency); }
             set { SetValue(CartDependency, value); }
         }
+        public static readonly DependencyProperty CartDependency = DependencyProperty.Register(nameof(Cart), typeof(BO.Cart), typeof(Window), new PropertyMetadata(null));
 
         public ObservableCollection<BO.ProductItem> ProductItems
         {

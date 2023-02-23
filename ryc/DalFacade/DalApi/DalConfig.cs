@@ -28,4 +28,3 @@ static class DalConfig
         s_dalClasses = packages.ToDictionary(p => "" + p.Name, p => p.Attributes().FirstOrDefault(x => x.Name == "class")!.Value);
     }
 }
-

@@ -20,9 +20,10 @@
         </Style>
     </Window.Resources>
     <Grid Background="#FF565553">
-        <Button x:Name="OpenManager" Content="manager" Click="ShowManagerButton_click" Margin="0,225,0,0" />
-        <Button x:Name="OpenNewOrder" Content="new order" Click="ShowNewOrderButton_click" Margin="0,405,0,0"/>
-        <Button x:Name="OpenOrderTrackingList" Content="orders tracking" Click="ShowOrdersTrackingButton_click" Margin="0,585,0,0"/>
+        <Button x:Name="OpenManager" Content="manager" Click="ShowManagerButton_click" Margin="0,191,0,0" />
+        <Button x:Name="OpenNewOrder" Content="new order" Click="ShowNewOrderButton_click" VerticalAlignment="Center"/>
+        <Button x:Name="OpenOrderTrackingList" Content="orders tracking" Click="ShowOrdersTrackingButton_click" Margin="0,483,0,0"/>
+        <Button x:Name="OpenSimulator" Content="simulator" Click="ShowSimulatorButton_click" Margin="0,636,0,0"/>
         <Label x:Name="titleL" Content="BURGERANCH" VerticalAlignment="Top" Foreground="#FFF1E9E9" FontWeight="Bold" FontSize="72" HorizontalContentAlignment="Center" Margin="0,65,0,0" Height="106"/>
     </Grid>
 </Window>

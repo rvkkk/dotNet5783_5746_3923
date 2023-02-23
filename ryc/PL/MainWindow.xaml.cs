@@ -46,5 +46,10 @@ namespace PL
         {
            new ChooseOrderWindow().Show();
         }
+
+        private void ShowSimulatorButton_click(object sender, RoutedEventArgs e)
+        {
+            new SimulatorWindow().Show();
+        }
     }
 }

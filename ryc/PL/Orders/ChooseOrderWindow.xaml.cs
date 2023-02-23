@@ -33,8 +33,9 @@ namespace PL.Orders
                 try
                 {
                     BO.OrderTracking? oT = bl?.Order.OrderTracking(int.Parse(tbOrderID.Text));
-                    new OrderTrackingWindow(oT!).Show();
                     Close();
+                    new OrderTrackingWindow(oT!).Show();
+                   
                 }
                 catch (Exception ex) { MessageBox.Show(ex.InnerException?.ToString(),ex.Message, MessageBoxButton.OK, MessageBoxImage.Error); }
             }

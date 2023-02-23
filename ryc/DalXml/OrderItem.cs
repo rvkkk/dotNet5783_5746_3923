@@ -48,8 +48,11 @@ namespace Dal
         /// <param name="o">recived orderItem</param>
         public void Update(DO.OrderItem o)
         {
-            Delete(o.ID);
-            Add(o);
+            List<DO.OrderItem?> orderItemsList = XMLTools.LoadListFromXMLSerializer<DO.OrderItem>(xmlOrderItemL);
+
+            orderItemsList.RemoveAll(orderI => orderI?.ID == o.ID);
+            orderItemsList.Add(o);
+            XMLTools.SaveListToXMLSerializer(orderItemsList, xmlOrderItemL);
         }
 
         /// <summary>

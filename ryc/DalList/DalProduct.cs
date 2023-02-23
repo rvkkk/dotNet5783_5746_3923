@@ -66,7 +66,7 @@ internal class DalProduct : IProduct
     /// <exception cref="InvalidID">there in no such a product</exception>
     public Product GetByF(Func<Product?, bool> func)
     {
-        return DataSource.lProduct.Where(func).First() ??
+        return DataSource.lProduct.Where(func).FirstOrDefault() ??
          throw new InvalidID("there in no such a product");
     }
 

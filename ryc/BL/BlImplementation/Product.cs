@@ -29,7 +29,7 @@ namespace BlImplementation
             lproducts = from DO.Product? product in dal!.Product.GetAll()
                         orderby product?.Name
                         select new ProductForList() { ID = (int)product?.ID!, Name = product?.Name, Category = (BO.Enums.Category)Enum.Parse(typeof(DO.Enums.Category), product?.Category.ToString()!), Price = (double)product?.Price! };
-            return func is null ? lproducts : lproducts.Where(func);
+            return func is null ? lproducts.OrderBy(p => p?.ID) : lproducts.Where(func).OrderBy(p => p?.ID);
         }
 
         /// <summary>
@@ -45,7 +45,7 @@ namespace BlImplementation
             {
                 return new ProductItem() { ID = (int)pI?.ID!, Name = pI?.Name, Category = (BO.Enums.Category)Enum.Parse(typeof(DO.Enums.Category), pI?.Category.ToString()!), Price = (double)pI?.Price!, Amount = 0, InStock = pI?.InStock != 0 };
             });
-            return func is null ? items : items.Where(func);
+            return func is null ? items.OrderBy(p => p?.ID) : items.Where(func).OrderBy(p => p?.ID);
         }
 
         /// <summary>
@@ -103,7 +103,7 @@ namespace BlImplementation
             try
             {
                 DO.Product pD = (DO.Product)dal?.Product.Get(ID)!;
-                BO.ProductItem pIB = new BO.ProductItem() { ID = pD.ID, Name = pD.Name, Category = (BO.Enums.Category)Enum.Parse(typeof(DO.Enums.Category), pD.Category.ToString()!), Price = pD.Price, Amount = (int)cart?.Items?.First(x => x!.ID == ID)!.Amount!, InStock = pD.InStock != 0 };
+                BO.ProductItem pIB = new BO.ProductItem() { ID = pD.ID, Name = pD.Name, Category = (BO.Enums.Category)Enum.Parse(typeof(DO.Enums.Category), pD.Category.ToString()!), Price = pD.Price, Amount = cart?.Items?.FirstOrDefault(x => x!.ID == ID)?.Amount ?? 0 , InStock = pD.InStock != 0 };
                 return pIB;
             }
             catch (DO.InvalidID ex) { throw new DalException("error in getting a product in cart", ex); }

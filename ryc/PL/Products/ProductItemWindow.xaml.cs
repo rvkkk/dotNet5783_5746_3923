@@ -39,7 +39,7 @@ namespace PL.Products
         {
             myCart = c;
             InitializeComponent();
-            ProductItemDetails = p;
+            ProductItemDetails = bl?.Product.Get(p.ID, c)!;
         }
 
         private void AddToCart_Click(object sender, RoutedEventArgs e)
@@ -53,7 +53,6 @@ namespace PL.Products
                 }
             }
             catch (AlreadyExists ex) { MessageBox.Show(ex.InnerException?.ToString(), ex.Message, MessageBoxButton.OK, MessageBoxImage.Error); }
-            //MessageBox.Show("the product already exists in the cart"); }}
         }
         private void Btn_increase_Click(object sender, RoutedEventArgs e)
         {

@@ -20,9 +20,9 @@ namespace BlImplementation
         /// </summary>
         /// <param name="order">a recived order</param>
         /// <returns>the order status</returns>
-        private BO.Enums.OrderStatus OrderStatus(DO.Order? order)
+        private Enums.OrderStatus OrderStatus(DO.Order? order)
         {
-            BO.Enums.OrderStatus oStatus = BO.Enums.OrderStatus.OrderConfirmed;
+            Enums.OrderStatus oStatus = BO.Enums.OrderStatus.OrderConfirmed;
             if (order?.DeliveryDate != null)
                 oStatus = BO.Enums.OrderStatus.DeliveredToCustomer;
             else if (order?.ShipDate != null)
@@ -49,7 +49,7 @@ namespace BlImplementation
                               AmountOfItems = dal.OrderItem.GetAll(x => x?.OrderID == order?.ID).Count(x => x?.Amount > 0),
                               TotalPrice = dal.OrderItem.GetAll(x => x?.OrderID == order?.ID).Sum(x => (x?.Amount * x?.Price) ?? 0)
                           };
-                return func is null ? lOrders : lOrders.Where(func);
+                return func is null ? lOrders.OrderBy(o => o?.ID) : lOrders.Where(func).OrderBy(o => o?.ID);
             }
             catch (DO.InvalidID ex) { throw new DalException("error in getting items in order", ex); }
         }
@@ -105,7 +105,7 @@ namespace BlImplementation
             }
             catch (DO.InvalidID ex) { throw new DalException("error in getting an order", ex); }
             if (oD.ShipDate != null)
-                throw new BO.AlreadyDone("the order alredy shipped");
+                throw new BO.AlreadyDone("the order already shipped");
             oD.ShipDate = DateTime.Now;
             try
             {
@@ -148,7 +148,7 @@ namespace BlImplementation
             if (oD.ShipDate == null)
                 throw new Exception("Delivery date can not be updated before shipping date");
             if (oD.DeliveryDate != null)
-                throw new BO.AlreadyDone("the order alredy delivered");
+                throw new AlreadyDone("the order alredy delivered");
             oD.DeliveryDate = DateTime.Now;
             try
             {
@@ -269,6 +269,40 @@ namespace BlImplementation
             }
             BO.OrderTracking orderTracking = new BO.OrderTracking() { ID = ID, Status = oStatus, List = lOrderT };
             return orderTracking;
+        }
+
+        /// <summary>
+        /// returns the order ID that were updated the first
+        /// </summary>
+        /// <returns>order ID</returns>
+        public int? GetOldestOrder()
+        {
+            var orders = dal!.Order.GetAll();
+            var lastOrder = (from order in orders
+                             where order?.DeliveryDate == null
+                             let date = order?.ShipDate == null ? order?.OrderDate : order?.ShipDate
+                             orderby date
+                             select new { ID = order?.ID, Date = date }).MinBy(x => x.Date);
+            return lastOrder == null ? null : lastOrder.ID;
+        }
+
+        /// <summary>
+        /// Update status of recived order
+        /// </summary>
+        /// <param name="ID">recived order id</param>
+        /// <exception cref="InvalidID">there in no such an id</exception>
+        /// <exception cref="AlreadyDone">the order alredy delivered</exception>
+        public void UpdateStatus(int ID)
+        {
+            if (ID <= 0)
+                throw new InvalidID("there in no such an id");
+            DO.Order? order = dal?.Order.Get(ID);
+            if (order?.DeliveryDate != null)
+                throw new AlreadyDone("the order alredy delivered");
+            if (order?.ShipDate == null)
+                ShipUpdate(ID);
+            else
+                DeliveryUpdate(ID);
         }
     }
 }
