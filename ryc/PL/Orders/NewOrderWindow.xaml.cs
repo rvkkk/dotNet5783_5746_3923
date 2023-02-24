@@ -99,10 +99,7 @@ namespace PL.Orders
                     ProductItems = (temp == null) ? new() : new(temp!);
                     ((Button)sender).Content = "All product items";
                 }
-                catch (BO.InvalidID ex)
-                {
-                    MessageBox.Show(ex.InnerException?.ToString(), ex.Message, MessageBoxButton.OK, MessageBoxImage.Error);
-                }
+                catch (DalException ex) { MessageBox.Show(ex.InnerException?.Message, ex.Message, MessageBoxButton.OK, MessageBoxImage.Error);}
             }
             else
             {

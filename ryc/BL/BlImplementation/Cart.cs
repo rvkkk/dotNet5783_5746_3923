@@ -26,7 +26,7 @@ namespace BlImplementation
         public BO.Cart AddToCart(BO.Cart cart, int ID)
         {
             if (ID <= 0)
-                throw new BO.InvalidID("there in no such an id");
+                throw new BO.InvalidID("there in no such a product id");
             if (cart.Items?.FirstOrDefault(p => p?.ProductID == ID) != null)
                 throw new BO.AlreadyExists("the product already exists in the cart");
             try
@@ -53,7 +53,7 @@ namespace BlImplementation
         public BO.Cart UpdateCart(BO.Cart cart, int ID, int amount)
         {
             if (ID <= 0)
-                throw new BO.InvalidID("there in no such an id");
+                throw new BO.InvalidID("there in no such a product id");
             if (cart.Items?.FirstOrDefault(p => p?.ProductID == ID) == null)
                 throw new BO.InvalidID("the product is not exist in the cart yet");
             BO.OrderItem? item = cart.Items?.FirstOrDefault(p => p!.ProductID == ID);
@@ -84,16 +84,16 @@ namespace BlImplementation
         /// creates an order according to the cart
         /// </summary>
         /// <param name="cart">recived cart</param>
-        /// <exception cref="BO.InvalidInput">recived invalid input</exception>
+        /// <exception cref="InvalidInput">recived invalid input</exception>
         /// <exception cref="DalException">exception from dal</exception>
         public int MakeAnOrder(BO.Cart cart)
         {
             if (cart.CustomerName == "")
-                throw new BO.InvalidInput("the customer name is empty");
+                throw new InvalidInput("the customer name is empty");
             if (cart.CustomerEmail == "")
-                throw new BO.InvalidInput("the customer email is empty");
+                throw new InvalidInput("the customer email is empty");
             if (cart.CustomerAddress == "")
-                throw new BO.InvalidInput("the customer address is empty");
+                throw new InvalidInput("the customer address is empty");
             DO.Order order = new DO.Order() { CustomerName = cart.CustomerName, CustomerEmail = cart.CustomerEmail, CustomerAddress = cart.CustomerAddress, OrderDate = DateTime.Now, ShipDate = null, DeliveryDate = null };
             int ID;
             try

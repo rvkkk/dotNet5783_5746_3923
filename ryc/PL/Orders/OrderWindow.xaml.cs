@@ -64,7 +64,10 @@ namespace PL.Orders
                 }
                 Close();
             }
-            catch (Exception ex) { MessageBox.Show(ex.InnerException?.ToString(), ex.Message, MessageBoxButton.OK, MessageBoxImage.Error); }
+            catch (AlreadyDone ex) { MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
+            catch (InvalidID ex) { MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
+            catch (DalException ex) { MessageBox.Show(ex.InnerException?.Message, ex.Message, MessageBoxButton.OK, MessageBoxImage.Error); }
+            catch (Exception ex) { MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
         }
 
         private void Btn_increase_Click(object sender, RoutedEventArgs e)
@@ -80,7 +83,9 @@ namespace PL.Orders
                         OrderDetails = bl?.Order.ManagerUpdate(OrderDetails!.ID, ID, amount + 1)!;
                     }
                 }
-                catch (Exception ex) { MessageBox.Show(ex.InnerException?.ToString(), ex.Message, MessageBoxButton.OK, MessageBoxImage.Error); }
+                catch (AlreadyDone ex) { MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
+                catch (InvalidID ex) { MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
+                catch (DalException ex) { MessageBox.Show(ex.InnerException?.Message, ex.Message, MessageBoxButton.OK, MessageBoxImage.Error); }
         }
 
         private void Btn_decrease_Click(object sender, RoutedEventArgs e)
@@ -95,7 +100,9 @@ namespace PL.Orders
                         OrderDetails = bl?.Order.ManagerUpdate(OrderDetails!.ID, ID, amount - 1)!;
                     }
                 }
-                catch (Exception ex) { MessageBox.Show(ex.InnerException?.ToString(), ex.Message, MessageBoxButton.OK, MessageBoxImage.Error); }
+                catch (AlreadyDone ex) { MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
+                catch (InvalidID ex) { MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
+                catch (DalException ex) { MessageBox.Show(ex.InnerException?.Message, ex.Message, MessageBoxButton.OK, MessageBoxImage.Error); }
         }
 
         private void RemoveFromOrder_Click(object sender, RoutedEventArgs e)
@@ -105,7 +112,9 @@ namespace PL.Orders
                 int ID = ((OrderItem)((Button)sender).DataContext).ProductID;
                 OrderDetails = bl?.Order.ManagerUpdate(OrderDetails!.ID, ID, 0)!;
             }
-            catch (Exception ex) { MessageBox.Show(ex.InnerException?.ToString(), ex.Message, MessageBoxButton.OK, MessageBoxImage.Error); }
+            catch (AlreadyDone ex) { MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
+            catch (InvalidID ex) { MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
+            catch (DalException ex) { MessageBox.Show(ex.InnerException?.Message, ex.Message, MessageBoxButton.OK, MessageBoxImage.Error); }
         }
 
         private void Return_Click(object sender, RoutedEventArgs e)

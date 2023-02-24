@@ -27,7 +27,7 @@ namespace Dal
             XElement? product = (from productE in productRootElement.Elements()
                                  where (int)productE.Element("ID")! == p.ID
                                  select productE).FirstOrDefault();
-            if(product != null) throw new AlreadyExists("the id already exists");
+            if(product != null) throw new AlreadyExists("the ID already exists");
 
             XElement productElement = new XElement("Product",
                                        new XElement("ID", p.ID),
@@ -54,7 +54,7 @@ namespace Dal
 
             XElement? product = (from p in prroductRootElement.Elements()
                                  where (int)p.Element("ID")! == ID
-                                 select p).FirstOrDefault() ?? throw new InvalidID("there in no such an id");
+                                 select p).FirstOrDefault() ?? throw new InvalidID("there in no such a product id");
 
             product.Remove();
 
@@ -85,7 +85,7 @@ namespace Dal
             return (from p in productRootElement?.Elements()
                     let product = createProductfromXElement(p)
                     where product?.ID == ID
-                    select product).FirstOrDefault() ?? throw new InvalidID("there in no such an id");
+                    select product).FirstOrDefault() ?? throw new InvalidID("there in no such a product id");
         }
 
         /// <summary>

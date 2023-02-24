@@ -1,4 +1,5 @@
-﻿using PL.Orders;
+﻿using BO;
+using PL.Orders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -56,7 +57,9 @@ namespace PL.Carts
                 new OrderWindow(bl?.Order.Get(ID)!, "customer").Show();
                 Close();
             }
-            catch (Exception ex) { MessageBox.Show(ex.Message, ex.InnerException?.ToString(), MessageBoxButton.OK, MessageBoxImage.Error); }  
+            catch (InvalidInput ex) { MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error); } 
+            catch (InvalidID ex) { MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
+            catch (DalException ex) { MessageBox.Show(ex.InnerException?.Message, ex.Message, MessageBoxButton.OK, MessageBoxImage.Error); }  
         }
     }
 }

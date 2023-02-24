@@ -37,7 +37,7 @@ namespace Dal
             List<DO.OrderItem?> orderItemsList = XMLTools.LoadListFromXMLSerializer<DO.OrderItem>(xmlOrderItemL);
 
             if (orderItemsList.RemoveAll(ordItem => ordItem?.ID == ID) == 0)
-                throw new InvalidID("there in no such an id");
+                throw new InvalidID("there in no such an order item id");
 
             XMLTools.SaveListToXMLSerializer(orderItemsList, xmlOrderItemL);
         }

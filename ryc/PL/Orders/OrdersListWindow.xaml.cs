@@ -68,7 +68,8 @@ namespace PL.Orders
                 var temp = bl?.Order.GetAll();
                 Orders = (temp == null) ? new() : new(temp);
             }
-            catch (InvalidID ex) { MessageBox.Show(ex.InnerException?.ToString(), ex.Message, MessageBoxButton.OK, MessageBoxImage.Error); }
+            catch (InvalidID ex) { MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
+            catch (DalException ex) { MessageBox.Show(ex.InnerException?.Message, ex.Message, MessageBoxButton.OK, MessageBoxImage.Error); }
         }
 
         private void ViewOrderWindowButton(object sender, RoutedEventArgs e)
@@ -81,7 +82,8 @@ namespace PL.Orders
                 var temp = bl?.Order.GetAll();
                 Orders = (temp == null) ? new() : new(temp);
             }
-            catch (InvalidID ex) { MessageBox.Show(ex.InnerException?.ToString(), ex.Message, MessageBoxButton.OK, MessageBoxImage.Error); }
+            catch (InvalidID ex) { MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
+            catch (DalException ex) { MessageBox.Show(ex.InnerException?.Message, ex.Message, MessageBoxButton.OK, MessageBoxImage.Error); }
         }
     }
 }

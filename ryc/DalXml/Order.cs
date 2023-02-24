@@ -37,7 +37,7 @@ namespace Dal
             List<DO.Order?> listOrders = XMLTools.LoadListFromXMLSerializer<DO.Order>(xmlOrderL);
 
             if (listOrders.RemoveAll(order => order?.ID == ID) == 0)
-                throw new InvalidID("there in no such an id");
+                throw new InvalidID("there in no such an order id");
             XMLTools.SaveListToXMLSerializer(listOrders, xmlOrderL);
         }
 
@@ -63,7 +63,7 @@ namespace Dal
         public DO.Order Get(int ID)
         {
             List<DO.Order?> listOrders = XMLTools.LoadListFromXMLSerializer<DO.Order>(xmlOrderL);
-            return listOrders.FirstOrDefault(o => o?.ID == ID) ?? throw new InvalidID("there in no such an order");
+            return listOrders.FirstOrDefault(o => o?.ID == ID) ?? throw new InvalidID("there in no such an order id");
         }
 
         /// <summary>

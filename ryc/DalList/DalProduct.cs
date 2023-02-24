@@ -33,7 +33,7 @@ internal class DalProduct : IProduct
     public void Delete(int ID)
     {
         if (DataSource.lProduct.RemoveAll(p => p?.ID == ID) == 0)
-            throw new InvalidID("there in no such an id");
+            throw new InvalidID("there in no such a product id");
     }
 
     /// <summary>
@@ -55,7 +55,7 @@ internal class DalProduct : IProduct
     public Product Get(int ID)
     {
         return DataSource.lProduct.FirstOrDefault(p => p?.ID == ID) ??
-           throw new InvalidID("there in no such an id");
+           throw new InvalidID("there in no such a product id");
     }
 
     /// <summary>

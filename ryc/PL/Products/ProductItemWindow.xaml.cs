@@ -39,7 +39,12 @@ namespace PL.Products
         {
             myCart = c;
             InitializeComponent();
-            ProductItemDetails = bl?.Product.Get(p.ID, c)!;
+            try
+            {
+                ProductItemDetails = bl?.Product.Get(p.ID, c)!;
+            }
+            catch (InvalidID ex) { MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
+            catch (DalException ex) { MessageBox.Show(ex.InnerException?.Message, ex.Message, MessageBoxButton.OK, MessageBoxImage.Error); }
         }
 
         private void AddToCart_Click(object sender, RoutedEventArgs e)
@@ -52,8 +57,12 @@ namespace PL.Products
                     myCart = bl?.Cart.UpdateCart(myCart!, ProductItemDetails.ID, ProductItemDetails.Amount);
                 }
             }
-            catch (AlreadyExists ex) { MessageBox.Show(ex.InnerException?.ToString(), ex.Message, MessageBoxButton.OK, MessageBoxImage.Error); }
+            catch (InvalidID ex) { MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
+            catch (AlreadyExists ex) { MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
+            catch (LessAmount ex) { MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
+            catch (DalException ex) { MessageBox.Show(ex.InnerException?.Message, ex.Message, MessageBoxButton.OK, MessageBoxImage.Error); }
         }
+
         private void Btn_increase_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -66,7 +75,8 @@ namespace PL.Products
                 }
 
             }
-            catch (InvalidID ex) { MessageBox.Show(ex.InnerException?.ToString(), ex.Message, MessageBoxButton.OK, MessageBoxImage.Error); }
+            catch (InvalidID ex) { MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
+            catch (DalException ex) { MessageBox.Show(ex.InnerException?.Message, ex.Message, MessageBoxButton.OK, MessageBoxImage.Error); }
         }
 
         private void Btn_decrease_Click(object sender, RoutedEventArgs e)
@@ -90,7 +100,9 @@ namespace PL.Products
                     Close();
                 }
             }
-            catch (InvalidID ex) { MessageBox.Show(ex.InnerException?.ToString(), ex.Message, MessageBoxButton.OK, MessageBoxImage.Error); }
+            catch (InvalidID ex) { MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
+            catch (LessAmount ex) { MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
+            catch (DalException ex) { MessageBox.Show(ex.InnerException?.Message, ex.Message, MessageBoxButton.OK, MessageBoxImage.Error); }
         }
 
         private void ReturnToCatalog_Click(object sender, RoutedEventArgs e)

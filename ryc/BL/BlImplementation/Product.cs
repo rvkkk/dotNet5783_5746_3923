@@ -39,7 +39,6 @@ namespace BlImplementation
         /// <returns>list of the products according to the function</returns>
         public IEnumerable<ProductItem?> GetAllPI(Func<ProductItem?, bool>? func = null)
         {
-
             IEnumerable<ProductItem?> items;
             items = dal!.Product.GetAll().Select(pI =>
             {
@@ -78,7 +77,7 @@ namespace BlImplementation
         public BO.Product Get(int ID)
         {
             if (ID <= 0)
-                throw new BO.InvalidID("there in no such an id");
+                throw new BO.InvalidID("there in no such a product id");
             try
             {
                 DO.Product pD = dal!.Product.Get(ID);
@@ -96,14 +95,14 @@ namespace BlImplementation
         /// <returns>product item in cart</returns>
         /// <exception cref="BO.InvalidID">recived invalid id</exception>
         /// <exception cref="DalException">exception from dal</exception>
-        public BO.ProductItem Get(int ID, BO.Cart cart)
+        public ProductItem Get(int ID, BO.Cart cart)
         {
             if (ID <= 0)
-                throw new BO.InvalidID("there in no such an id");
+                throw new BO.InvalidID("there in no such a product id");
             try
             {
                 DO.Product pD = (DO.Product)dal?.Product.Get(ID)!;
-                BO.ProductItem pIB = new BO.ProductItem() { ID = pD.ID, Name = pD.Name, Category = (BO.Enums.Category)Enum.Parse(typeof(DO.Enums.Category), pD.Category.ToString()!), Price = pD.Price, Amount = cart?.Items?.FirstOrDefault(x => x!.ID == ID)?.Amount ?? 0 , InStock = pD.InStock != 0 };
+                ProductItem pIB = new ProductItem() { ID = pD.ID, Name = pD.Name, Category = (BO.Enums.Category)Enum.Parse(typeof(DO.Enums.Category), pD.Category.ToString()!), Price = pD.Price, Amount = cart?.Items?.FirstOrDefault(x => x!.ID == ID)?.Amount ?? 0 , InStock = pD.InStock != 0 };
                 return pIB;
             }
             catch (DO.InvalidID ex) { throw new DalException("error in getting a product in cart", ex); }
@@ -119,7 +118,7 @@ namespace BlImplementation
         public void Add(BO.Product p)
         {
             if (p.ID <= 0)
-                throw new BO.InvalidID("there in no such an id");
+                throw new BO.InvalidID("there in no such a product id");
             if (p.Name == "")
                 throw new BO.InvalidInput("the name is empty");
             if (p.Price <= 0)
@@ -144,7 +143,7 @@ namespace BlImplementation
             try
             {
                 if (dal?.OrderItem.GetByF(oI => oI?.ProductID == ID) != null)
-                    throw new BO.AlreadyExists("the product is in alredy in order");
+                    throw new BO.AlreadyExists("the product is in an order already");
                 else
                     dal?.Product.Delete(ID);
             }
@@ -158,7 +157,7 @@ namespace BlImplementation
         public void Update(BO.Product p)
         {
             if (p.ID <= 0)
-                throw new BO.InvalidID("there in no such an id");
+                throw new BO.InvalidID("there in no such a product id");
             if (p.Name == "")
                 throw new BO.InvalidInput("the name is empty");
             if (p.Price <= 0)

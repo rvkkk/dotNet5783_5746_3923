@@ -73,7 +73,8 @@ namespace PL.Products
                 var temp = bl?.Product.GetAll();
                 Products = (temp == null) ? new() : new(temp);
             }
-            catch (InvalidID ex) { MessageBox.Show(ex.InnerException?.ToString(), ex.Message, MessageBoxButton.OK, MessageBoxImage.Error); }
+            catch (InvalidID ex) { MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
+            catch (DalException ex) { MessageBox.Show(ex.InnerException?.Message, ex.Message, MessageBoxButton.OK, MessageBoxImage.Error); }
         }
 
         private void ViewProductWindowButton(object sender, RoutedEventArgs e)
@@ -86,7 +87,8 @@ namespace PL.Products
                 var temp = bl?.Product.GetAll();
                 Products = (temp == null) ? new() : new(temp);
             }
-            catch (InvalidID ex) { MessageBox.Show(ex.InnerException?.ToString(), ex.Message, MessageBoxButton.OK, MessageBoxImage.Error); }
+            catch (InvalidID ex) { MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
+            catch (DalException ex) { MessageBox.Show(ex.InnerException?.Message, ex.Message, MessageBoxButton.OK, MessageBoxImage.Error); }
         }
     }
 }

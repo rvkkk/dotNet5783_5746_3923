@@ -31,7 +31,7 @@ internal class DalOrderItem : IOrderItem
     public void Delete(int ID)
     {
         if (DataSource.lOrderItem.RemoveAll(o => o?.ID == ID) == 0)
-            throw new InvalidID("there in no such an id");
+            throw new InvalidID("there in no such an order item id");
     }
 
     /// <summary>
@@ -53,7 +53,7 @@ internal class DalOrderItem : IOrderItem
     public OrderItem Get(int ID)
     {
         return DataSource.lOrderItem.FirstOrDefault(p => p?.ID == ID) ??
-          throw new InvalidID("there in no such an id");
+          throw new InvalidID("there in no such an order item id");
     }
 
     /// <summary>

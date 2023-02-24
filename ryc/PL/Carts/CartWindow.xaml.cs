@@ -65,7 +65,9 @@ namespace PL.Carts
                     tBtotalPrice.Text = myCart.TotalPrice.ToString();
                 }
             }
-            catch (Exception ex) { MessageBox.Show(ex.InnerException?.ToString(), ex.Message, MessageBoxButton.OK, MessageBoxImage.Error); }
+            catch (InvalidID ex) { MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
+            catch (LessAmount ex) { MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
+            catch (DalException ex) { MessageBox.Show(ex.InnerException?.Message, ex.Message, MessageBoxButton.OK, MessageBoxImage.Error); }
         }
 
         private void Btn_decrease_Click(object sender, RoutedEventArgs e)
@@ -82,7 +84,9 @@ namespace PL.Carts
                     tBtotalPrice.Text = myCart.TotalPrice.ToString();
                 }
             }
-            catch (Exception ex) { MessageBox.Show(ex.InnerException?.ToString(), ex.Message, MessageBoxButton.OK, MessageBoxImage.Error); }
+            catch (BO.InvalidID ex) { MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
+            catch (LessAmount ex) { MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
+            catch (Exception ex) { MessageBox.Show(ex.InnerException?.Message, ex.Message, MessageBoxButton.OK, MessageBoxImage.Error); }
         }
 
         private void RemoveFromCart_Click(object sender, RoutedEventArgs e)
@@ -95,7 +99,9 @@ namespace PL.Carts
                 CartItems = (temp == null) ? new() : new(temp!);
                 tBtotalPrice.Text = myCart?.TotalPrice.ToString();
             }
-            catch (Exception ex) { MessageBox.Show(ex.InnerException?.ToString(), ex.Message, MessageBoxButton.OK, MessageBoxImage.Error); }
+            catch (BO.InvalidID ex) { MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
+            catch (LessAmount ex) { MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
+            catch (Exception ex) { MessageBox.Show(ex.InnerException?.Message, ex.Message, MessageBoxButton.OK, MessageBoxImage.Error); }
         }
 
         private void EmptyCartBtn_Click(object sender, RoutedEventArgs e)

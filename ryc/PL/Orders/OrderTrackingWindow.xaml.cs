@@ -40,7 +40,8 @@ namespace PL.Orders
             {
                 new OrderWindow(bl?.Order.Get(OrderTracking.ID)!, "customer").ShowDialog();
             }
-            catch (Exception ex) { MessageBox.Show(ex.InnerException?.ToString(), ex.Message, MessageBoxButton.OK, MessageBoxImage.Error); }
+            catch (InvalidID ex) { MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
+            catch (DalException ex) { MessageBox.Show(ex.InnerException?.Message, ex.Message, MessageBoxButton.OK, MessageBoxImage.Error); }
         }
 
         private void Return_Click(object sender, RoutedEventArgs e)

@@ -38,20 +38,16 @@ namespace BlImplementation
         public IEnumerable<OrderForList?> GetAll(Func<BO.OrderForList?, bool>? func = null)
         {
             IEnumerable<BO.OrderForList?> lOrders;
-            try
-            {
-                lOrders = from DO.Order? order in dal!.Order.GetAll()
-                          select new BO.OrderForList()
-                          {
-                              ID = (int)order?.ID!,
-                              CustomerName = order?.CustomerName ?? "",
-                              Status = OrderStatus(order),
-                              AmountOfItems = dal.OrderItem.GetAll(x => x?.OrderID == order?.ID).Count(x => x?.Amount > 0),
-                              TotalPrice = dal.OrderItem.GetAll(x => x?.OrderID == order?.ID).Sum(x => (x?.Amount * x?.Price) ?? 0)
-                          };
-                return func is null ? lOrders.OrderBy(o => o?.ID) : lOrders.Where(func).OrderBy(o => o?.ID);
-            }
-            catch (DO.InvalidID ex) { throw new DalException("error in getting items in order", ex); }
+            lOrders = from DO.Order? order in dal!.Order.GetAll()
+                      select new BO.OrderForList()
+                      {
+                          ID = (int)order?.ID!,
+                          CustomerName = order?.CustomerName ?? "",
+                          Status = OrderStatus(order),
+                          AmountOfItems = dal.OrderItem.GetAll(x => x?.OrderID == order?.ID).Count(x => x?.Amount > 0),
+                          TotalPrice = dal.OrderItem.GetAll(x => x?.OrderID == order?.ID).Sum(x => (x?.Amount * x?.Price) ?? 0)
+                      };
+            return func is null ? lOrders.OrderBy(o => o?.ID) : lOrders.Where(func).OrderBy(o => o?.ID);
         }
 
         /// <summary>
@@ -64,7 +60,7 @@ namespace BlImplementation
         public BO.Order Get(int ID)
         {
             if (ID <= 0)
-                throw new BO.InvalidID("there in no such an id");
+                throw new InvalidID("there in no such an order id");
             DO.Order oD;
             try
             {
@@ -98,6 +94,8 @@ namespace BlImplementation
         /// <exception cref="DalException">exception from dal</exception>
         public BO.Order ShipUpdate(int ID)
         {
+            if (ID <= 0)
+                throw new InvalidID("there in no such an order id");
             DO.Order oD;
             try
             {
@@ -139,6 +137,8 @@ namespace BlImplementation
         /// <exception cref="DalException">exception from dal</exception>
         public BO.Order DeliveryUpdate(int ID)
         {
+            if (ID <= 0)
+                throw new InvalidID("there in no such an order id");
             DO.Order oD;
             try
             {
@@ -184,6 +184,10 @@ namespace BlImplementation
         /// <exception cref="DalException">exception from dal</exception>
         public BO.Order ManagerUpdate(int ID, int productID, int amount)
         {
+            if (ID <= 0)
+                throw new InvalidID("there in no such an order id");
+            if (productID <= 0)
+                throw new InvalidID("there in no such a product id");
             DO.Order oD;
             try
             {
@@ -214,7 +218,7 @@ namespace BlImplementation
                     catch (Exception ex) { throw new DalException("error in deleting an item", ex); }
                 }
             }
-            catch (DO.InvalidID) 
+            catch (DO.InvalidID)
             {
                 DO.Product p = dal.Product.Get(productID);
                 item = new DO.OrderItem() { OrderID = ID, ProductID = productID, Price = p.Price, Amount = amount };
@@ -248,6 +252,8 @@ namespace BlImplementation
         /// <exception cref="DalException">exception from dal</exception>
         public OrderTracking OrderTracking(int ID)
         {
+            if (ID <= 0)
+                throw new InvalidID("there in no such an order id");
             DO.Order oD;
             try
             {
@@ -295,7 +301,7 @@ namespace BlImplementation
         public void UpdateStatus(int ID)
         {
             if (ID <= 0)
-                throw new InvalidID("there in no such an id");
+                throw new InvalidID("there in no such an order id");
             DO.Order? order = dal?.Order.Get(ID);
             if (order?.DeliveryDate != null)
                 throw new AlreadyDone("the order alredy delivered");
